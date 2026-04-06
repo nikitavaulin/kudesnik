@@ -10,4 +10,8 @@ services:
       - ${PROJECT_ROOT}/out/pgdata:/var/lib/postgresql
     restart: always
 
-    
+  kudesnik-postgres-migrate:
+    image: migrate/migrate:v4.19.1
+    # container_name: kudesnik-env-postgres-migrate
+    volumes:
+      - ${PROJECT_ROOT}/migrations:/migrations
