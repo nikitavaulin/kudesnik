@@ -19,6 +19,12 @@ env-cleanup:
 		echo "Clearing was cancelled"; \
 	fi
 
+env-port-forward:
+	@docker compose up -d port-forwarder
+
+env-port-close:
+	@docker compose down -d port-forwarder
+
 migrate-create:
 	@if [ -z "$(seq)" ]; then \
 		echo "Argument seq is missed. Want: make migrate-create seq=init";\
@@ -45,3 +51,4 @@ migrate-action:
 		-path //migrations \
 		-database postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@kudesnik-postgres:5432/$(POSTGRES_DB)?sslmode=disable \
 		"$(action)"
+
