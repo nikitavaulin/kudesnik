@@ -52,3 +52,5 @@ migrate-action:
 		-database postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@kudesnik-postgres:5432/$(POSTGRES_DB)?sslmode=disable \
 		"$(action)"
 
+kudesnik-run:
+	@go run cmd/kudesnik/main.go
