@@ -11,15 +11,17 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+const ContextKey = "log"
+
 type Logger struct {
 	*zap.Logger
 	file *os.File
 }
 
 func FromContext(ctx context.Context) *Logger {
-	logger, ok := ctx.Value("log").(*Logger)
+	logger, ok := ctx.Value(ContextKey).(*Logger)
 	if !ok {
-		panic("no logger in contest")
+		panic("no logger in context")
 	}
 	return logger
 }
