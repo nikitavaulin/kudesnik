@@ -53,4 +53,6 @@ migrate-action:
 		"$(action)"
 
 kudesnik-run:
-	@go run cmd/kudesnik/main.go
+	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	go mod tidy && \
+	go run cmd/kudesnik/main.go
