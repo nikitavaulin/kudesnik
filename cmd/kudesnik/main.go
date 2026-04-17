@@ -8,9 +8,12 @@ import (
 	"syscall"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
+	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
 	core_http_middleware "github.com/nikitavaulin/kudesnik/internal/core/transport/http/middleware"
 	core_http_server "github.com/nikitavaulin/kudesnik/internal/core/transport/http/server"
-	products_transport_http "github.com/nikitavaulin/kudesnik/internal/features/products/transport/http"
+	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
+	product_categories_service "github.com/nikitavaulin/kudesnik/internal/features/product_categories/service"
+	product_categories_transport_http "github.com/nikitavaulin/kudesnik/internal/features/product_categories/transport"
 	"go.uber.org/zap"
 )
 
@@ -27,16 +30,26 @@ func main() {
 	}
 	defer logger.Close()
 
+	pool, err := core_postgres_pool.NewConnectionPool(ctx, core_postgres_pool.NewConfigMust())
+	if err != nil {
+		logger.Fatal("failed to create postgresql connection pool", zap.Error(err))
+	}
+	defer pool.Close()
+
 	logger.Debug("Starting Kudesnik application!")
 
-	productsTransportHTTP := products_transport_http.NewProductsHTTPHandler(nil)
-	productsRouters := productsTransportHTTP.Routes()
+	logger.Debug("initializing features", zap.String("feature", "Product-Categories"))
+
+	productCategoriesRepo := product_categories_repository.NewProductCategoriesRepository(pool)
+	productCategoriesService := product_categories_service.NewProductCategoriesService(productCategoriesRepo)
+	productCategoriesHTTPTransport := product_categories_transport_http.NewProductCategoryHTTPHandler(productCategoriesService)
 
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouter.RegisterRoutes(
-		productsRouters...,
+		productCategoriesHTTPTransport.Routes()...,
 	)
 
+	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfigMust(),
 		logger,
