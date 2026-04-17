@@ -4,7 +4,7 @@ export
 export PROJECT_ROOT=$(shell pwd)
 
 env-up:
-	@docker compose up -d kudesnik-postgres
+	@docker compose up -d kudesnik-postgres port-forwarder
 
 env-down:
 	@docker compose down kudesnik-postgres
@@ -12,7 +12,7 @@ env-down:
 env-cleanup:
 	@read -p "ATTENTION! Clear all volume env files? Lose data danger. [y/N]: " ans; \
 	if [ "$$ans" = "y" ]; then \
-		docker compose down kudesnik-postgres && \
+		docker compose down kudesnik-postgres port-forwarder && \
 		rm -rf out/pgdata && \
 		echo "Env files were cleared"; \
 	else \
@@ -54,5 +54,6 @@ migrate-action:
 
 kudesnik-run:
 	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	export POSTGRES_HOST=localhost && \
 	go mod tidy && \
 	go run cmd/kudesnik/main.go
