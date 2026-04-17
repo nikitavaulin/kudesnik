@@ -12,13 +12,13 @@ type Config struct {
 	Port     string        `envconfig:"PORT" default:"5432"`
 	User     string        `envconfig:"USER" required:"true"`
 	Password string        `envconfig:"PASSWORD" required:"true"`
-	Database string        `envconfig:"DATABASE" required:"true"`
+	Database string        `envconfig:"DB" required:"true"`
 	Timeout  time.Duration `envconfig:"TIMEOUT" required:"true"`
 }
 
 func NewConfig() (Config, error) {
 	var config Config
-	if err := envconfig.Process("POSTGRES", config); err != nil {
+	if err := envconfig.Process("POSTGRES", &config); err != nil {
 		return Config{}, fmt.Errorf("failed process envconfig: %w", err)
 	}
 	return config, nil

@@ -15,16 +15,18 @@ type Pool interface {
 	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 	Close()
+
+	OperationTime() time.Duration
 }
 
 type ConnectionPool struct {
-	pool   *pgxpool.Pool
+	*pgxpool.Pool
 	opTime time.Duration
 }
 
 func NewConnectionPool(ctx context.Context, config Config) (*ConnectionPool, error) {
 	connectionString := fmt.Sprintf(
-		"postgresql://%s:%s@%s:%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		config.User, config.Password,
 		config.Host, config.Port,
 		config.Database,
@@ -45,7 +47,11 @@ func NewConnectionPool(ctx context.Context, config Config) (*ConnectionPool, err
 	}
 
 	return &ConnectionPool{
-		pool:   pool,
+		Pool:   pool,
 		opTime: config.Timeout,
 	}, nil
+}
+
+func (p *ConnectionPool) OperationTime() time.Duration {
+	return p.opTime
 }
