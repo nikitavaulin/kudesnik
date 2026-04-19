@@ -14,11 +14,7 @@ type CreateCategoryRequest struct {
 	InstallationPrice float64 `json:"installation_price"`
 }
 
-type CreateCategoryResponse struct {
-	ID                string  `json:"id"`
-	CategoryName      string  `json:"category_name"`
-	InstallationPrice float64 `json:"installation_price"`
-}
+type CreateCategoryResponse ProductCategoryDTOResponse
 
 func (h *ProductCategoryHTTPHandler) CreateCategory(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -35,25 +31,17 @@ func (h *ProductCategoryHTTPHandler) CreateCategory(rw http.ResponseWriter, r *h
 
 	category := domainFromDTO(requestDTO)
 
-	category, err := h.categoryService.CreateProductCategory(ctx, category)
+	category, err := h.categoriesService.CreateProductCategory(ctx, category)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to create product category")
 		return
 	}
 
-	responseDTO := dtoFromDomain(category)
+	responseDTO := CreateCategoryResponse(dtoFromDomain(category))
 
 	responseHandler.JSONResponse(responseDTO, http.StatusCreated)
 }
 
 func domainFromDTO(dto CreateCategoryRequest) domain.ProductCategory {
 	return *domain.NewProductCategoryUninitialized(dto.CategoryName, dto.InstallationPrice)
-}
-
-func dtoFromDomain(category domain.ProductCategory) CreateCategoryResponse {
-	return CreateCategoryResponse{
-		ID:                category.ID.String(),
-		CategoryName:      category.CategoryName,
-		InstallationPrice: category.InstallationPrice,
-	}
 }

@@ -7,15 +7,16 @@ import (
 )
 
 type ProductCategoriesService struct {
-	categoryRepository ProductCategoriesRepository
+	categoriesRepository ProductCategoriesRepository
 }
 
 type ProductCategoriesRepository interface {
 	CreateProductCategory(ctx context.Context, category domain.ProductCategory) (domain.ProductCategory, error)
+	GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error)
 }
 
-func NewProductCategoriesService(categoryRepository ProductCategoriesRepository) *ProductCategoriesService {
+func NewProductCategoriesService(categoriesRepository ProductCategoriesRepository) *ProductCategoriesService {
 	return &ProductCategoriesService{
-		categoryRepository: categoryRepository,
+		categoriesRepository: categoriesRepository,
 	}
 }

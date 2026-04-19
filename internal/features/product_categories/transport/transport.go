@@ -9,7 +9,7 @@ import (
 )
 
 type ProductCategoryHTTPHandler struct {
-	categoryService ProductCategoryService
+	categoriesService ProductCategoryService
 }
 
 type ProductCategoryService interface {
@@ -17,11 +17,13 @@ type ProductCategoryService interface {
 		ctx context.Context,
 		category domain.ProductCategory,
 	) (domain.ProductCategory, error)
+
+	GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error)
 }
 
-func NewProductCategoryHTTPHandler(categoryService ProductCategoryService) *ProductCategoryHTTPHandler {
+func NewProductCategoryHTTPHandler(categoriesService ProductCategoryService) *ProductCategoryHTTPHandler {
 	return &ProductCategoryHTTPHandler{
-		categoryService: categoryService,
+		categoriesService: categoriesService,
 	}
 }
 

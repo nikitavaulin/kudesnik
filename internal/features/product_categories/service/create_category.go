@@ -12,7 +12,7 @@ func (s *ProductCategoriesService) CreateProductCategory(ctx context.Context, ca
 		return domain.ProductCategory{}, fmt.Errorf("validate product category domain: %w", err)
 	}
 
-	category, err := s.categoryRepository.CreateProductCategory(ctx, category)
+	category, err := s.categoriesRepository.CreateProductCategory(ctx, category)
 	if err != nil {
 		return domain.ProductCategory{}, fmt.Errorf("create product category: %w", err)
 	}
