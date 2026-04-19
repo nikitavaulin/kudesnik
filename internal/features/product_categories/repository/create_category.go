@@ -18,7 +18,8 @@ func (r *ProductCategoriesRepository) CreateProductCategory(
 	query := `
 		INSERT INTO kudesnik.product_categories 
 		(product_category_id, product_category_name, installation_price)
-		VALUES ($1, $2, $3);
+		VALUES ($1, $2, $3)
+		RETURNING product_category_id, product_category_name, installation_price;
 	`
 
 	row := r.pool.QueryRow(
@@ -27,7 +28,8 @@ func (r *ProductCategoriesRepository) CreateProductCategory(
 	)
 
 	var model ProductCategoriesModel
-	if err := row.Scan(model); err != nil {
+	err := row.Scan(&model.ID, &model.CategoryName, &model.InstallationPrice)
+	if err != nil {
 		return domain.ProductCategory{}, fmt.Errorf("CreateProductCategoryRepo: %w", err)
 	}
 

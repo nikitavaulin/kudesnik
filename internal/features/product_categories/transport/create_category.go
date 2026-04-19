@@ -28,7 +28,7 @@ func (h *ProductCategoryHTTPHandler) CreateCategory(rw http.ResponseWriter, r *h
 	log.Debug("invoke create product category handler")
 
 	var requestDTO CreateCategoryRequest
-	if err := core_http_request.DecodeAndValidateRequest(r, requestDTO); err != nil {
+	if err := core_http_request.DecodeAndValidateRequest(r, &requestDTO); err != nil {
 		responseHandler.ErrorResponse(err, "failed to decode and validate HTTP request")
 		return
 	}

@@ -32,7 +32,7 @@ func NewProductCategory(id uuid.UUID, name string, installationPrice float64) *P
 
 func (c *ProductCategory) Validate() error {
 	nameLength := len([]rune(c.CategoryName))
-	if validateIntInBounds(nameLength, MinProductCategoryNameLength, MaxProductCategoryNameLength) {
+	if !validateIntInBounds(nameLength, MinProductCategoryNameLength, MaxProductCategoryNameLength) {
 		return fmt.Errorf(
 			"product category should be between %d and %d, got: %d: %w",
 			MinProductCategoryNameLength, MaxProductCategoryNameLength,
@@ -42,7 +42,11 @@ func (c *ProductCategory) Validate() error {
 	}
 
 	if c.InstallationPrice < 0 {
-		return fmt.Errorf("installation price should be greater than 0: %w", core_errors.ErrInvalidArgument)
+		return fmt.Errorf(
+			"installation price should be greater than 0, got: %v: %w",
+			c.InstallationPrice,
+			core_errors.ErrInvalidArgument,
+		)
 	}
 
 	return nil
