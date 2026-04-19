@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
+	core_validation "github.com/nikitavaulin/kudesnik/internal/core/tools/validation"
 )
 
 const (
@@ -32,7 +33,7 @@ func NewProductCategory(id uuid.UUID, name string, installationPrice float64) *P
 
 func (c *ProductCategory) Validate() error {
 	nameLength := len([]rune(c.CategoryName))
-	if !validateIntInBounds(nameLength, MinProductCategoryNameLength, MaxProductCategoryNameLength) {
+	if !core_validation.IsIntInBounds(nameLength, MinProductCategoryNameLength, MaxProductCategoryNameLength) {
 		return fmt.Errorf(
 			"product category should be between %d and %d, got: %d: %w",
 			MinProductCategoryNameLength, MaxProductCategoryNameLength,
@@ -50,8 +51,4 @@ func (c *ProductCategory) Validate() error {
 	}
 
 	return nil
-}
-
-func validateIntInBounds(number, minValue, maxValue int) bool {
-	return minValue <= number && number <= maxValue
 }
