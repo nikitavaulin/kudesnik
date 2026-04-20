@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_http_server "github.com/nikitavaulin/kudesnik/internal/core/transport/http/server"
 )
@@ -19,6 +20,8 @@ type ProductCategoryService interface {
 	) (domain.ProductCategory, error)
 
 	GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error)
+
+	GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error)
 }
 
 func NewProductCategoryHTTPHandler(categoriesService ProductCategoryService) *ProductCategoryHTTPHandler {
@@ -38,6 +41,11 @@ func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodGet,
 			Path:    "/product-categories",
 			Handler: h.GetCategories,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/product-categories/{id}",
+			Handler: h.GetProductCategory,
 		},
 	}
 }
