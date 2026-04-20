@@ -16,23 +16,32 @@ func (r *ProductCategoriesRepository) GetProductCategories(ctx context.Context, 
 		LIMIT $1 OFFSET $2;
 	`
 
-	rows, err := r.pool.Query(ctx, query, *limit, *offset)
+	rows, err := r.pool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return []domain.ProductCategory{}, fmt.Errorf("failed to get categories from pool: %w", err)
+		return nil, fmt.Errorf("failed to get categories from pool: %w", err)
 	}
 	defer rows.Close()
 
 	var categoriesModels []ProductCategoriesModel
-	if err := rows.Scan(&categoriesModels); err != nil {
-		return []domain.ProductCategory{}, fmt.Errorf("failed to scan categories from rows: %w", err)
+	for rows.Next() {
+		var categoryModel ProductCategoriesModel
+
+		err := rows.Scan(
+			&categoryModel.ID,
+			&categoryModel.CategoryName,
+			&categoryModel.InstallationPrice,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan categories from pool: %w", err)
+		}
+
+		categoriesModels = append(categoriesModels, categoryModel)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("next rows: %w", err)
 	}
 
-	return nil, nil
-}
+	categories := domainsFromModels(categoriesModels)
 
-// func domainsFromModels(categoriesModels []ProductCategoriesModel) []domain.ProductCategory {
-// 	categories := make([]domain.ProductCategory, len(categoriesModels))
-// 	for i, model := range categoriesModels {
-// 		categories[i] = *domain.NewProductCategory(model)
-// 	}
-// }
+	return categories, nil
+}

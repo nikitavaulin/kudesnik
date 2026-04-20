@@ -34,5 +34,10 @@ func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 			Path:    "/product-categories",
 			Handler: h.CreateCategory,
 		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/product-categories",
+			Handler: h.GetCategories,
+		},
 	}
 }
