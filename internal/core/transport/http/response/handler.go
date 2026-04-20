@@ -11,26 +11,30 @@ import (
 	"go.uber.org/zap"
 )
 
-type HTTPReponseHandler struct {
+type HTTPResponseHandler struct {
 	log *core_logger.Logger
 	rw  http.ResponseWriter
 }
 
-func NewHTTPReponseHandler(log *core_logger.Logger, rw http.ResponseWriter) *HTTPReponseHandler {
-	return &HTTPReponseHandler{
+func NewHTTPReponseHandler(log *core_logger.Logger, rw http.ResponseWriter) *HTTPResponseHandler {
+	return &HTTPResponseHandler{
 		log: log,
 		rw:  rw,
 	}
 }
 
-func (h *HTTPReponseHandler) JSONResponse(responseBody any, statusCode int) {
+func (h *HTTPResponseHandler) JSONResponse(responseBody any, statusCode int) {
 	h.rw.WriteHeader(statusCode)
 	if err := json.NewEncoder(h.rw).Encode(responseBody); err != nil {
-		h.log.Error("failded to write HTTP response", zap.Error(err))
+		h.log.Error("failed to write HTTP response", zap.Error(err))
 	}
 }
 
-func (h *HTTPReponseHandler) ErrorResponse(err error, msg string) {
+func (h *HTTPResponseHandler) NoContentResponse() {
+	h.rw.WriteHeader(http.StatusNoContent)
+}
+
+func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 	var statusCode int
 	var logFunc func(string, ...zap.Field)
 
@@ -57,14 +61,14 @@ func (h *HTTPReponseHandler) ErrorResponse(err error, msg string) {
 
 }
 
-func (h *HTTPReponseHandler) PanicResponse(p any, msg string) {
+func (h *HTTPResponseHandler) PanicResponse(p any, msg string) {
 	statusCode := http.StatusInternalServerError
 	err := fmt.Errorf("unexpected panic: %v", p)
 
 	h.errorResponse(statusCode, err, msg)
 }
 
-func (h *HTTPReponseHandler) errorResponse(statusCode int, err error, msg string) {
+func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg string) {
 	h.log.Error(msg, zap.Error(err))
 
 	response := map[string]string{
