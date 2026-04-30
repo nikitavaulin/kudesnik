@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
+	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
 )
 
 func (r *ProductCategoriesRepository) PatchProductCategory(
@@ -45,7 +45,7 @@ func (r *ProductCategoriesRepository) PatchProductCategory(
 		&categoryModel.InstallationPrice,
 	)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
 			return domain.ProductCategory{}, fmt.Errorf(
 				"category with ID=%v: %v: %w",
 				categoryID,

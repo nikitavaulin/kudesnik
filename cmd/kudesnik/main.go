@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
-	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
+	core_pgx_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/nikitavaulin/kudesnik/internal/core/transport/http/middleware"
 	core_http_server "github.com/nikitavaulin/kudesnik/internal/core/transport/http/server"
 	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
@@ -30,9 +30,9 @@ func main() {
 	}
 	defer logger.Close()
 
-	pool, err := core_postgres_pool.NewConnectionPool(ctx, core_postgres_pool.NewConfigMust())
+	pool, err := core_pgx_pool.NewPool(ctx, core_pgx_pool.NewConfigMust())
 	if err != nil {
-		logger.Fatal("failed to create postgresql connection pool", zap.Error(err))
+		logger.Fatal("failed to create pgx connection pool", zap.Error(err))
 	}
 	defer pool.Close()
 

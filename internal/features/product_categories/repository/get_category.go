@@ -2,13 +2,13 @@ package product_categories_repository
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
+	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
 )
 
 func (r *ProductCategoriesRepository) GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error) {
@@ -30,7 +30,7 @@ func (r *ProductCategoriesRepository) GetProductCategory(ctx context.Context, ca
 		&categoryModel.InstallationPrice,
 	)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
 			return domain.ProductCategory{}, fmt.Errorf(
 				"category with id=%s: %w",
 				categoryID.String(),
