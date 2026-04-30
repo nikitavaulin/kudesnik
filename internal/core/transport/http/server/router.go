@@ -32,7 +32,7 @@ func NewAPIVersionRouter(apiVersion ApiVersion, middlewares ...core_http_middlew
 func (r *APIVersionRouter) RegisterRoutes(routes ...Route) {
 	for _, route := range routes {
 		pattern := fmt.Sprintf("%s %s", route.Method, route.Path)
-		r.Handle(pattern, r.WithMiddleware())
+		r.Handle(pattern, route.WithMiddleware())
 	}
 }
 
