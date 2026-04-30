@@ -19,6 +19,8 @@ type ProductCategoriesRepository interface {
 	GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error)
 
 	DeleteProductCategory(ctx context.Context, categoryID uuid.UUID) error
+
+	PatchProductCategory(ctx context.Context, categoryID uuid.UUID, category domain.ProductCategory) (domain.ProductCategory, error)
 }
 
 func NewProductCategoriesService(categoriesRepository ProductCategoriesRepository) *ProductCategoriesService {

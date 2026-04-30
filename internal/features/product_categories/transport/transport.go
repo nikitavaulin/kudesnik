@@ -24,6 +24,8 @@ type ProductCategoryService interface {
 	GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error)
 
 	DeleteProductCategory(ctx context.Context, categoryID uuid.UUID) error
+
+	PatchProductCategory(ctx context.Context, categoryID uuid.UUID, patch domain.ProductCategoryPatch) (domain.ProductCategory, error)
 }
 
 func NewProductCategoryHTTPHandler(categoriesService ProductCategoryService) *ProductCategoryHTTPHandler {
@@ -53,6 +55,11 @@ func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodDelete,
 			Path:    "/product-categories/{id}",
 			Handler: h.DeleteProductCategory,
+		},
+		{
+			Method:  http.MethodPatch,
+			Path:    "/product-categories/{id}",
+			Handler: h.PatchProductCategory,
 		},
 	}
 }
