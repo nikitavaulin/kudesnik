@@ -22,3 +22,11 @@ func domainsFromModels(categoriesModels []ProductCategoriesModel) []domain.Produ
 	}
 	return categories
 }
+
+func domainFromModel(categoryModel ProductCategoriesModel) domain.ProductCategory {
+	return *domain.NewProductCategory(
+		categoryModel.ID,
+		categoryModel.CategoryName,
+		categoryModel.InstallationPrice,
+	)
+}
