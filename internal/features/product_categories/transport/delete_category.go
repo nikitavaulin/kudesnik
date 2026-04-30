@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
+	core_http_request "github.com/nikitavaulin/kudesnik/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
-	core_http_utils "github.com/nikitavaulin/kudesnik/internal/core/transport/http/utils"
 )
 
 func (h *ProductCategoryHTTPHandler) DeleteProductCategory(rw http.ResponseWriter, r *http.Request) {
@@ -15,7 +15,7 @@ func (h *ProductCategoryHTTPHandler) DeleteProductCategory(rw http.ResponseWrite
 
 	log.Debug("invoke delete product categories handler")
 
-	categoryID, err := core_http_utils.GetUUIDFromPath(r, "id")
+	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get categoryID")
 		return

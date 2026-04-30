@@ -9,7 +9,7 @@ import (
 
 type HTTPServerConfig struct {
 	Address          string        `envconfig:"ADDRESS" required:"true"`
-	ShutdownDuration time.Duration `envconfig:"SHUTDOWN_DURATION" required:"true"`
+	ShutdownDuration time.Duration `envconfig:"SHUTDOWN_DURATION" default:"30s"`
 }
 
 func NewHTTPServerConfig() (*HTTPServerConfig, error) {

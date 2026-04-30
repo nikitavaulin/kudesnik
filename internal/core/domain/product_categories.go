@@ -58,6 +58,13 @@ type ProductCategoryPatch struct {
 	InstallationPrice Nullable[float64]
 }
 
+func NewProductCategoryPatch(categoryName Nullable[string], installationPrice Nullable[float64]) ProductCategoryPatch {
+	return ProductCategoryPatch{
+		CategoryName:      categoryName,
+		InstallationPrice: installationPrice,
+	}
+}
+
 func (c *ProductCategoryPatch) Validate() error {
 	if c.CategoryName.Set && c.CategoryName.Value == nil {
 		return fmt.Errorf("CategoryName can't be patched to NULL: %w", core_errors.ErrInvalidArgument)

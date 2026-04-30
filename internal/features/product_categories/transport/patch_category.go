@@ -11,7 +11,6 @@ import (
 	core_http_request "github.com/nikitavaulin/kudesnik/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 	core_http_types "github.com/nikitavaulin/kudesnik/internal/core/transport/http/types"
-	core_http_utils "github.com/nikitavaulin/kudesnik/internal/core/transport/http/utils"
 )
 
 type PatchProductCategoryRequest struct {
@@ -47,7 +46,7 @@ func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter
 
 	log.Debug("invoke patch product category handler")
 
-	categoryID, err := core_http_utils.GetUUIDFromPath(r, "id")
+	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get categoryID")
 		return
@@ -73,8 +72,8 @@ func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter
 }
 
 func patchDomainFromDTO(categoryPatchDTO PatchProductCategoryRequest) domain.ProductCategoryPatch {
-	return domain.ProductCategoryPatch{
-		CategoryName:      categoryPatchDTO.CategoryName.ToDomain(),
-		InstallationPrice: categoryPatchDTO.InstallationPrice.ToDomain(),
-	}
+	return domain.NewProductCategoryPatch(
+		categoryPatchDTO.CategoryName.ToDomain(),
+		categoryPatchDTO.InstallationPrice.ToDomain(),
+	)
 }

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
+	core_http_request "github.com/nikitavaulin/kudesnik/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
-	core_http_utils "github.com/nikitavaulin/kudesnik/internal/core/transport/http/utils"
 )
 
 type GetCategoriesResponse []ProductCategoryDTOResponse
@@ -35,12 +35,12 @@ func (h *ProductCategoryHTTPHandler) GetCategories(rw http.ResponseWriter, r *ht
 }
 
 func getLimitOffsetParams(r *http.Request) (*int, *int, error) {
-	limit, err := core_http_utils.GetIntQueryParam(r, "limit")
+	limit, err := core_http_request.GetIntQueryParam(r, "limit")
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to get limit query param: %w", err)
 	}
 
-	offset, err := core_http_utils.GetIntQueryParam(r, "offset")
+	offset, err := core_http_request.GetIntQueryParam(r, "offset")
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to get offset query param: %w", err)
 	}
