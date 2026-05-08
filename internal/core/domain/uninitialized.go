@@ -3,6 +3,6 @@ package domain
 import "github.com/google/uuid"
 
 var (
-	UnizitializedID      = uuid.Nil
-	UnizitializedVersion = -1
+	UninitializedID      = uuid.Nil
+	UninitializedVersion = -1
 )

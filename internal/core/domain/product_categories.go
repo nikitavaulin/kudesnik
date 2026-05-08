@@ -20,7 +20,7 @@ type ProductCategory struct {
 }
 
 func NewProductCategoryUninitialized(name string, installationPrice float64) *ProductCategory {
-	return NewProductCategory(UnizitializedID, name, installationPrice)
+	return NewProductCategory(UninitializedID, name, installationPrice)
 }
 
 func NewProductCategory(id uuid.UUID, name string, installationPrice float64) *ProductCategory {
