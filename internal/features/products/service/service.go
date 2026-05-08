@@ -19,6 +19,7 @@ type ProductsRepository interface {
 	DeleteProducts(ctx context.Context, IDs []uuid.UUID) error
 	UpdateProductVisability(ctx context.Context, id uuid.UUID, isVisible bool) error
 	UpdateProductsVisability(ctx context.Context, IDs []uuid.UUID, isVisible bool) error
+	PatchProduct(ctx context.Context, id uuid.UUID, product domain.BaseProduct) (domain.BaseProduct, error)
 }
 
 func NewProductsService(productRepo ProductsRepository) *ProductsService {

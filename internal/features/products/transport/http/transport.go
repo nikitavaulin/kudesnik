@@ -21,6 +21,7 @@ type ProductsService interface {
 	DeleteProducts(ctx context.Context, IDs []uuid.UUID) error
 	UpdateProductVisability(ctx context.Context, id uuid.UUID, isVisible bool) error
 	UpdateProductsVisability(ctx context.Context, IDs []uuid.UUID, isVisible bool) error
+	PatchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductPatch) (domain.BaseProduct, error)
 }
 
 func NewProductsHTTPHandler(productsService ProductsService) *ProductsHTTPHandler {
@@ -65,6 +66,11 @@ func (h *ProductsHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodPatch,
 			Path:    "/products/visibility",
 			Handler: h.UpdateProductsVisability,
+		},
+		{
+			Method:  http.MethodPatch,
+			Path:    "/products/{id}",
+			Handler: h.PatchProduct,
 		},
 	}
 }

@@ -101,3 +101,88 @@ func (p BaseProduct) GetProducerID() *uuid.UUID { return p.ProducerID }
 func (p BaseProduct) GetDetails() any {
 	return nil
 }
+
+type ProductPatch struct {
+	ProductName Nullable[string]
+	Price       Nullable[float64]
+	Description Nullable[string]
+	IsVisible   Nullable[bool]
+	CategoryID  Nullable[uuid.UUID]
+	ProducerID  Nullable[uuid.UUID]
+}
+
+func NewProductPatch(
+	productName Nullable[string],
+	price Nullable[float64],
+	description Nullable[string],
+	isVisible Nullable[bool],
+	categoryID Nullable[uuid.UUID],
+	producerID Nullable[uuid.UUID],
+) *ProductPatch {
+	return &ProductPatch{
+		ProductName: productName,
+		Price:       price,
+		Description: description,
+		IsVisible:   isVisible,
+		CategoryID:  categoryID,
+		ProducerID:  producerID,
+	}
+}
+
+func (p *ProductPatch) Validate() error {
+	if p.ProductName.Set {
+		if *p.ProductName.Value == "" {
+			return fmt.Errorf("product name cannot be empty: %w", core_errors.ErrInvalidArgument)
+		}
+
+		if err := core_validation.ValidateIntInBounds(len(*p.ProductName.Value), MinProductNameLength, MaxProductNameLength); err != nil {
+			return fmt.Errorf("wrong product name length: %v: %w", err, core_errors.ErrInvalidArgument)
+		}
+	}
+
+	if p.Price.Set && *p.Price.Value < 0 {
+		return fmt.Errorf("product price must be non-negative: %w", core_errors.ErrInvalidArgument)
+	}
+
+	return nil
+}
+
+func (p *BaseProduct) ApplyPatch(patch ProductPatch) error {
+	if err := patch.Validate(); err != nil {
+		return fmt.Errorf("invalid product patch: %w", err)
+	}
+
+	tmp := *p
+
+	if patch.ProductName.Set {
+		tmp.ProductName = *patch.ProductName.Value
+	}
+
+	if patch.Description.Set {
+		tmp.Description = patch.Description.Value
+	}
+
+	if patch.Price.Set {
+		tmp.Price = *patch.Price.Value
+	}
+
+	if patch.IsVisible.Set {
+		tmp.IsVisible = *patch.IsVisible.Value
+	}
+
+	if patch.IsVisible.Set {
+		tmp.CategoryID = *patch.CategoryID.Value
+	}
+
+	if patch.ProducerID.Set {
+		tmp.ProducerID = patch.ProducerID.Value
+	}
+
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("invalid product after patch: %w", err)
+	}
+
+	*p = tmp
+
+	return nil
+}
