@@ -1,6 +1,8 @@
 package core_validation
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func ValidateIntInBounds(number, minValue, maxValue int) error {
 	if !(minValue <= number && number <= maxValue) {
@@ -11,5 +13,17 @@ func ValidateIntInBounds(number, minValue, maxValue int) error {
 			number,
 		)
 	}
+	return nil
+}
+
+func ValidateLimitOffset(limit, offset *int) error {
+	if limit != nil && *limit < 0 {
+		return fmt.Errorf("limit must be non-negative")
+	}
+
+	if offset != nil && *offset < 0 {
+		return fmt.Errorf("offset must be non-negative")
+	}
+
 	return nil
 }
