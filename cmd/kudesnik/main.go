@@ -14,6 +14,9 @@ import (
 	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
 	product_categories_service "github.com/nikitavaulin/kudesnik/internal/features/product_categories/service"
 	product_categories_transport_http "github.com/nikitavaulin/kudesnik/internal/features/product_categories/transport"
+	products_repository_postges "github.com/nikitavaulin/kudesnik/internal/features/products/repository/postgres"
+	products_service "github.com/nikitavaulin/kudesnik/internal/features/products/service"
+	products_transport_http "github.com/nikitavaulin/kudesnik/internal/features/products/transport/http"
 	"go.uber.org/zap"
 )
 
@@ -40,14 +43,17 @@ func main() {
 
 	logger.Debug("initializing features", zap.String("feature", "Product-Categories"))
 
-	productCategoriesRepo := product_categories_repository.NewProductCategoriesRepository(pool)
-	productCategoriesService := product_categories_service.NewProductCategoriesService(productCategoriesRepo)
-	productCategoriesHTTPTransport := product_categories_transport_http.NewProductCategoryHTTPHandler(productCategoriesService)
+	productsCategoriesRepo := product_categories_repository.NewProductCategoriesRepository(pool)
+	productsCategoriesService := product_categories_service.NewProductCategoriesService(productsCategoriesRepo)
+	productsCategoriesHTTPTransport := product_categories_transport_http.NewProductCategoryHTTPHandler(productsCategoriesService)
+
+	productsRepo := products_repository_postges.NewProductsRepositoryPostgres(pool)
+	productsSevice := products_service.NewProductsService(productsRepo)
+	productsTransport := products_transport_http.NewProductsHTTPHandler(productsSevice)
 
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
-	apiVersionRouter.RegisterRoutes(
-		productCategoriesHTTPTransport.Routes()...,
-	)
+	apiVersionRouter.RegisterRoutes(productsCategoriesHTTPTransport.Routes()...)
+	apiVersionRouter.RegisterRoutes(productsTransport.Routes()...)
 
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(

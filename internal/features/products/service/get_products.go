@@ -1,15 +1,16 @@
-package product_categories_service
+package products_service
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 	core_validation "github.com/nikitavaulin/kudesnik/internal/core/tools/validation"
 )
 
-func (s *ProductCategoriesService) GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error) {
+func (s *ProductsService) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.BaseProduct, error) {
 	if err := core_validation.ValidateLimitOffset(limit, offset); err != nil {
 		return nil, fmt.Errorf(
 			"wrong limit/offset: %v, %w",
@@ -18,10 +19,10 @@ func (s *ProductCategoriesService) GetProductCategories(ctx context.Context, lim
 		)
 	}
 
-	categories, err := s.categoriesRepository.GetProductCategories(ctx, limit, offset)
+	products, err := s.productRepo.GetProducts(ctx, categoryID, limit, offset)
 	if err != nil {
-		return []domain.ProductCategory{}, fmt.Errorf("failed to get categories from repo: %w", err)
+		return []domain.BaseProduct{}, fmt.Errorf("failed to get products from repo: %w", err)
 	}
 
-	return categories, nil
+	return products, nil
 }
