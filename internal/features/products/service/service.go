@@ -12,14 +12,20 @@ type ProductsService struct {
 }
 
 type ProductsRepository interface {
-	CreateProduct(ctx context.Context, product domain.BaseProduct) (domain.BaseProduct, error)
-	GetProduct(ctx context.Context, id uuid.UUID) (domain.BaseProduct, error)
-	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.BaseProduct, error)
+	CreateProduct(ctx context.Context, product domain.ProductBase) (domain.ProductBase, error)
+	CreateWindow(ctx context.Context, product domain.Window) (domain.Window, error)
+
+	GetProduct(ctx context.Context, id uuid.UUID) (domain.ProductBase, error)
+	GetWindow(ctx context.Context, id uuid.UUID) (domain.Window, error)
+	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error)
+
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
 	DeleteProducts(ctx context.Context, IDs []uuid.UUID) error
+
 	UpdateProductVisability(ctx context.Context, id uuid.UUID, isVisible bool) error
 	UpdateProductsVisability(ctx context.Context, IDs []uuid.UUID, isVisible bool) error
-	PatchProduct(ctx context.Context, id uuid.UUID, product domain.BaseProduct) (domain.BaseProduct, error)
+
+	PatchProduct(ctx context.Context, id uuid.UUID, product domain.ProductBase) (domain.ProductBase, error)
 }
 
 func NewProductsService(productRepo ProductsRepository) *ProductsService {

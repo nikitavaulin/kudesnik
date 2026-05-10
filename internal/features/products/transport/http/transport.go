@@ -14,14 +14,14 @@ type ProductsHTTPHandler struct {
 }
 
 type ProductsService interface {
-	CreateProduct(ctx context.Context, product domain.BaseProduct) (domain.BaseProduct, error)
-	GetProduct(ctx context.Context, id uuid.UUID) (domain.BaseProduct, error)
-	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.BaseProduct, error)
+	CreateProduct(ctx context.Context, product domain.Product) (domain.Product, error)
+	GetProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryName) (domain.Product, error)
+	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error)
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
 	DeleteProducts(ctx context.Context, IDs []uuid.UUID) error
 	UpdateProductVisability(ctx context.Context, id uuid.UUID, isVisible bool) error
 	UpdateProductsVisability(ctx context.Context, IDs []uuid.UUID, isVisible bool) error
-	PatchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductPatch) (domain.BaseProduct, error)
+	PatchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductPatch) (domain.ProductBase, error)
 }
 
 func NewProductsHTTPHandler(productsService ProductsService) *ProductsHTTPHandler {

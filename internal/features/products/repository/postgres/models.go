@@ -16,7 +16,7 @@ type ProductModel struct {
 	ProducerID  *uuid.UUID
 }
 
-func productDomainFromModel(m ProductModel) domain.BaseProduct {
+func productDomainFromModel(m ProductModel) domain.ProductBase {
 	return *domain.NewProduct(
 		m.ID, m.Version,
 		m.ProductName, m.Price, m.Description,
@@ -24,8 +24,8 @@ func productDomainFromModel(m ProductModel) domain.BaseProduct {
 	)
 }
 
-func productsDomainFromModels(models ...ProductModel) []domain.BaseProduct {
-	products := make([]domain.BaseProduct, len(models))
+func productsDomainFromModels(models ...ProductModel) []domain.ProductBase {
+	products := make([]domain.ProductBase, len(models))
 	for i, model := range models {
 		product := productDomainFromModel(model)
 		products[i] = product

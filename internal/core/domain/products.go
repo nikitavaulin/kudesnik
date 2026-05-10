@@ -14,27 +14,44 @@ const (
 )
 
 type Product interface {
-	GetID() uuid.UUID
-	GetVersion() int
-	GetProductName() string
-	GetPrice() float64
-	GetDescription() *string
-	GetIsVisible() bool
-	GetCategoryID() uuid.UUID
-	GetProducerID() *uuid.UUID
-	GetDetails() any
+	GetBase() *ProductBase
+	GetCategoryName() ProductCategoryName
+	Validate() error
 }
 
-type BaseProduct struct {
-	ID          uuid.UUID
-	Version     int
-	ProductName string
-	Price       float64
-	Description *string
-	IsVisible   bool
-	CategoryID  uuid.UUID
-	ProducerID  *uuid.UUID
+func GetProductEmptyInstance(categoryName string) Product {
+	category := GetCategoryName(categoryName)
+	switch category {
+	case WindowsCategory:
+		return &Window{}
+	default:
+		return &ProductBase{}
+	}
 }
+
+type ProductBase struct {
+	ID          uuid.UUID  `json:"id"`
+	Version     int        `json:"version"`
+	ProductName string     `json:"product_name"`
+	Price       float64    `json:"price"`
+	Description *string    `json:"description"`
+	IsVisible   bool       `json:"is_visible"`
+	CategoryID  uuid.UUID  `json:"category_id"`
+	ProducerID  *uuid.UUID `json:"producer_id,omitempty"`
+}
+
+type ProductBaseDetailed struct {
+	ProductBase
+	ProductDetails
+}
+
+type ProductDetails struct {
+	CategoryName        string `json:"category_name"`
+	ProducerCompanyName string `json:"producer_company_name"`
+}
+
+func (p *ProductBase) GetBase() *ProductBase                { return p }
+func (p *ProductBase) GetCategoryName() ProductCategoryName { return OthersCategory }
 
 func NewProduct(
 	id uuid.UUID,
@@ -45,8 +62,8 @@ func NewProduct(
 	isVisible bool,
 	categoryID uuid.UUID,
 	producerID *uuid.UUID,
-) *BaseProduct {
-	return &BaseProduct{
+) *ProductBase {
+	return &ProductBase{
 		ID:          id,
 		Version:     version,
 		ProductName: name,
@@ -64,7 +81,7 @@ func NewProductUninitialized(
 	description *string,
 	categoryID uuid.UUID,
 	producerID *uuid.UUID,
-) *BaseProduct {
+) *ProductBase {
 	return NewProduct(
 		UninitializedID, UninitializedVersion,
 		name, price, description,
@@ -73,7 +90,7 @@ func NewProductUninitialized(
 	)
 }
 
-func (p *BaseProduct) Validate() error {
+func (p *ProductBase) Validate() error {
 	if p.ProductName == "" {
 		return fmt.Errorf("product name cannot be empty: %w", core_errors.ErrInvalidArgument)
 	}
@@ -86,19 +103,6 @@ func (p *BaseProduct) Validate() error {
 		return fmt.Errorf("product price must be non-negative: %w", core_errors.ErrInvalidArgument)
 	}
 
-	return nil
-}
-
-func (p BaseProduct) GetID() uuid.UUID          { return p.ID }
-func (p BaseProduct) GetVersion() int           { return p.Version }
-func (p BaseProduct) GetProductName() string    { return p.ProductName }
-func (p BaseProduct) GetPrice() float64         { return p.Price }
-func (p BaseProduct) GetDescription() *string   { return p.Description }
-func (p BaseProduct) GetIsVisible() bool        { return p.IsVisible }
-func (p BaseProduct) GetCategoryID() uuid.UUID  { return p.CategoryID }
-func (p BaseProduct) GetProducerID() *uuid.UUID { return p.ProducerID }
-
-func (p BaseProduct) GetDetails() any {
 	return nil
 }
 
@@ -147,7 +151,7 @@ func (p *ProductPatch) Validate() error {
 	return nil
 }
 
-func (p *BaseProduct) ApplyPatch(patch ProductPatch) error {
+func (p *ProductBase) ApplyPatch(patch ProductPatch) error {
 	if err := patch.Validate(); err != nil {
 		return fmt.Errorf("invalid product patch: %w", err)
 	}

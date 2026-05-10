@@ -7,15 +7,30 @@ import (
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
-func (s *ProductsService) CreateProduct(ctx context.Context, product domain.BaseProduct) (domain.BaseProduct, error) {
+func (s *ProductsService) CreateProduct(ctx context.Context, product domain.Product) (domain.Product, error) {
 	if err := product.Validate(); err != nil {
-		return domain.BaseProduct{}, fmt.Errorf("create product validation: %w", err)
+		return nil, fmt.Errorf("create product validation: %w", err)
 	}
 
-	product, err := s.productRepo.CreateProduct(ctx, product)
+	product, err := s.createProduct(ctx, product)
 	if err != nil {
-		return domain.BaseProduct{}, fmt.Errorf("failed to create product in repository : %w", err)
+		return nil, fmt.Errorf("failed to create product in repository : %w", err)
 	}
 
 	return product, nil
+}
+
+func (s *ProductsService) createProduct(ctx context.Context, product domain.Product) (domain.Product, error) {
+	switch p := product.(type) {
+	case *domain.Window:
+		window, err := s.productRepo.CreateWindow(ctx, *p)
+		return &window, err
+
+	case *domain.ProductBase:
+		productBase, err := s.productRepo.CreateProduct(ctx, *p)
+		return &productBase, err
+
+	default:
+		return nil, fmt.Errorf("unknown product category")
+	}
 }

@@ -9,7 +9,7 @@ import (
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 )
 
-func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.BaseProduct, error) {
+func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
 	defer cancel()
 

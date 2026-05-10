@@ -10,7 +10,7 @@ import (
 	core_validation "github.com/nikitavaulin/kudesnik/internal/core/tools/validation"
 )
 
-func (s *ProductsService) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.BaseProduct, error) {
+func (s *ProductsService) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error) {
 	if err := core_validation.ValidateLimitOffset(limit, offset); err != nil {
 		return nil, fmt.Errorf(
 			"wrong limit/offset: %v, %w",
@@ -21,7 +21,7 @@ func (s *ProductsService) GetProducts(ctx context.Context, categoryID *uuid.UUID
 
 	products, err := s.productRepo.GetProducts(ctx, categoryID, limit, offset)
 	if err != nil {
-		return []domain.BaseProduct{}, fmt.Errorf("failed to get products from repo: %w", err)
+		return []domain.ProductBase{}, fmt.Errorf("failed to get products from repo: %w", err)
 	}
 
 	return products, nil

@@ -28,7 +28,7 @@ type ProductDTOResponse struct {
 	ProducerID  *string `json:"producer_id"`
 }
 
-func productDtoFromDomain(product domain.BaseProduct) ProductDTOResponse {
+func productDtoFromDomain(product domain.ProductBase) ProductDTOResponse {
 	var producerID *string
 	if product.ProducerID != nil {
 		id := *product.ProducerID
@@ -48,7 +48,7 @@ func productDtoFromDomain(product domain.BaseProduct) ProductDTOResponse {
 	}
 }
 
-func productsDtoFromDomain(products ...domain.BaseProduct) []ProductDTOResponse {
+func productsDtoFromDomain(products ...domain.ProductBase) []ProductDTOResponse {
 	dtos := make([]ProductDTOResponse, len(products))
 	for i, product := range products {
 		dto := productDtoFromDomain(product)

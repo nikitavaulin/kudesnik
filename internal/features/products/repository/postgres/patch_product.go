@@ -14,8 +14,8 @@ import (
 func (r *ProductsRepositoryPostgres) PatchProduct(
 	ctx context.Context,
 	id uuid.UUID,
-	product domain.BaseProduct,
-) (domain.BaseProduct, error) {
+	product domain.ProductBase,
+) (domain.ProductBase, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
 	defer cancel()
 
@@ -63,14 +63,14 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 	)
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
-			return domain.BaseProduct{}, fmt.Errorf(
+			return domain.ProductBase{}, fmt.Errorf(
 				"product with ID=%v concurrently accessed: %v: %w",
 				id,
 				err,
 				core_errors.ErrConflict,
 			)
 		}
-		return domain.BaseProduct{}, fmt.Errorf("scan product error: %v", err)
+		return domain.ProductBase{}, fmt.Errorf("scan product error: %v", err)
 	}
 
 	patchedProduct := productDomainFromModel(productModel)
