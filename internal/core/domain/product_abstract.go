@@ -4,7 +4,6 @@ type Product interface {
 	GetBase() *ProductBase
 	GetCategoryName() ProductCategoryCode
 	Validate() error
-	// ApplyPatch(patch ProductPatch) error
 }
 
 type ProductPatch interface {
