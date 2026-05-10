@@ -2,11 +2,13 @@ package products_repository_postges
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
+	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
 )
 
 func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUID) (domain.ProductBase, error) {
@@ -28,7 +30,10 @@ func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUI
 		&productModel.IsVisible, &productModel.CategoryCode, &productModel.ProducerID,
 	)
 	if err != nil {
-		return domain.ProductBase{}, fmt.Errorf("GetProduct from repo: %v: %w", err, core_errors.ErrNotFound)
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
+			return domain.ProductBase{}, fmt.Errorf("GetProduct from repo: %v: %w", err, core_errors.ErrNotFound)
+		}
+		return domain.ProductBase{}, fmt.Errorf("GetProduct from repo: %w", err)
 	}
 
 	product := productDomainFromModel(productModel)
@@ -75,7 +80,10 @@ func (r *ProductsRepositoryPostgres) GetWindow(ctx context.Context, id uuid.UUID
 		&window.Version,
 	)
 	if err != nil {
-		return domain.Window{}, fmt.Errorf("Get window from repo: %v: %w", err, core_errors.ErrNotFound)
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
+			return domain.Window{}, fmt.Errorf("Get window from repo: %v: %w", err, core_errors.ErrNotFound)
+		}
+		return domain.Window{}, fmt.Errorf("Get window from repo: %w", err)
 	}
 
 	return window, nil

@@ -168,7 +168,7 @@ func (p *ProductBase) ApplyPatch(basePatch *ProductBasePatch) error {
 		tmp.IsVisible = *basePatch.IsVisible.Value
 	}
 
-	if basePatch.IsVisible.Set {
+	if basePatch.CategoryCode.Set {
 		tmp.CategoryCode = *basePatch.CategoryCode.Value
 	}
 
@@ -184,3 +184,6 @@ func (p *ProductBase) ApplyPatch(basePatch *ProductBasePatch) error {
 
 	return nil
 }
+
+func (p *ProductBasePatch) isProductPatch() {}
+func (p *WindowPatch) isProductPatch()      {}

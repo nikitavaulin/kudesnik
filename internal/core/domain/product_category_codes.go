@@ -9,7 +9,6 @@ type ProductCategoryCode string
 const (
 	WindowsCategory       ProductCategoryCode = "windows"
 	BalconiesCategory     ProductCategoryCode = "balconies"
-	DoorsCategory         ProductCategoryCode = "doors"
 	EntranceDoorsCategory ProductCategoryCode = "entrance-doors"
 	InteriorDoorsCategory ProductCategoryCode = "interior-doors"
 	OthersCategory        ProductCategoryCode = "others"
@@ -22,7 +21,6 @@ const (
 
 var categoriesEnum map[ProductCategoryCode]any = map[ProductCategoryCode]any{
 	WindowsCategory:       struct{}{},
-	DoorsCategory:         struct{}{},
 	EntranceDoorsCategory: struct{}{},
 	InteriorDoorsCategory: struct{}{},
 	OthersCategory:        struct{}{},

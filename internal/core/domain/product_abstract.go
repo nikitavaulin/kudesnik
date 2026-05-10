@@ -8,6 +8,7 @@ type Product interface {
 
 type ProductPatch interface {
 	Validate() error
+	isProductPatch()
 }
 
 func GetProductEmptyInstance(categoryCode string) Product {
@@ -15,6 +16,10 @@ func GetProductEmptyInstance(categoryCode string) Product {
 	switch category {
 	case WindowsCategory:
 		return &Window{}
+	case EntranceDoorsCategory:
+		return &EntranceDoor{}
+	case InteriorDoorsCategory:
+		return &InteriorDoor{}
 	default:
 		return &ProductBase{}
 	}
@@ -25,6 +30,10 @@ func GetProductPatchEmptyInstance(categoryCode string) ProductPatch {
 	switch category {
 	case WindowsCategory:
 		return &WindowPatch{}
+	case EntranceDoorsCategory:
+		return &EntranceDoorPatch{}
+	case InteriorDoorsCategory:
+		return &InteriorDoorPatch{}
 	default:
 		return &ProductBasePatch{}
 	}

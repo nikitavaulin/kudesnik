@@ -77,21 +77,15 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 	return patchedProduct, nil
 }
 
-func (r *ProductsRepositoryPostgres) PatchWindow(
+// Общая функция для обновления базовых полей продукта
+func (r *ProductsRepositoryPostgres) updateProductBaseInTx(
 	ctx context.Context,
+	tx core_postgres_pool.Tx,
 	id uuid.UUID,
-	window domain.Window,
-) (domain.Window, error) {
-	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
-	defer cancel()
-
-	tx, err := r.pool.Begin(ctx)
-	if err != nil {
-		return domain.Window{}, fmt.Errorf("PatchWindow in Repo (begin tx): %w", err)
-	}
-	defer tx.Rollback(ctx)
-
-	updateProductsQuery := `
+	product domain.ProductBase,
+	currentVersion int,
+) (domain.ProductBase, error) {
+	query := `
 		UPDATE kudesnik.products
 		SET 
 			product_name = $2,
@@ -113,89 +107,38 @@ func (r *ProductsRepositoryPostgres) PatchWindow(
 			producer_id;
 	`
 
-	var productBase domain.ProductBase
-	err = tx.QueryRow(
-		ctx, updateProductsQuery,
+	var updatedProduct domain.ProductBase
+	err := tx.QueryRow(
+		ctx, query,
 		id,
-		window.ProductName,
-		window.Price,
-		window.Description,
-		window.IsVisible,
-		window.CategoryCode,
-		window.ProducerID,
-		window.Version,
+		product.ProductName,
+		product.Price,
+		product.Description,
+		product.IsVisible,
+		product.CategoryCode,
+		product.ProducerID,
+		currentVersion,
 	).Scan(
-		&productBase.ID,
-		&productBase.Version,
-		&productBase.ProductName,
-		&productBase.Price,
-		&productBase.Description,
-		&productBase.IsVisible,
-		&productBase.CategoryCode,
-		&productBase.ProducerID,
+		&updatedProduct.ID,
+		&updatedProduct.Version,
+		&updatedProduct.ProductName,
+		&updatedProduct.Price,
+		&updatedProduct.Description,
+		&updatedProduct.IsVisible,
+		&updatedProduct.CategoryCode,
+		&updatedProduct.ProducerID,
 	)
 
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
-			return domain.Window{}, fmt.Errorf(
-				"window with ID=%v concurrently accessed: %w",
+			return domain.ProductBase{}, fmt.Errorf(
+				"product with ID=%v concurrently accessed: %w",
 				id,
 				core_errors.ErrConflict,
 			)
 		}
-		return domain.Window{}, fmt.Errorf("PatchWindow in Repo (update products): %w", err)
+		return domain.ProductBase{}, fmt.Errorf("update product base: %w", err)
 	}
 
-	updateWindowsQuery := `
-		UPDATE kudesnik.windows
-		SET 
-			purpose = $2,
-			width = $3,
-			height = $4,
-			material = $5
-		WHERE window_id = $1
-		RETURNING 
-			purpose,
-			width,
-			height,
-			material;
-	`
-
-	var windowSpecific struct {
-		Purpose  string
-		Width    int
-		Height   int
-		Material string
-	}
-	err = tx.QueryRow(
-		ctx, updateWindowsQuery,
-		id,
-		window.Purpose,
-		window.Width,
-		window.Height,
-		window.Material,
-	).Scan(
-		&windowSpecific.Purpose,
-		&windowSpecific.Width,
-		&windowSpecific.Height,
-		&windowSpecific.Material,
-	)
-	if err != nil {
-		return domain.Window{}, fmt.Errorf("PatchWindow in Repo (update windows): %w", err)
-	}
-
-	if err = tx.Commit(ctx); err != nil {
-		return domain.Window{}, fmt.Errorf("PatchWindow in Repo (commit): %w", err)
-	}
-
-	// Формируем результат из полученных данных
-	patchedWindow := domain.Window{
-		ProductBase: productBase,
-		Purpose:     windowSpecific.Purpose,
-		Width:       windowSpecific.Width,
-		Height:      windowSpecific.Height,
-		Material:    windowSpecific.Material,
-	}
-
-	return patchedWindow, nil
+	return updatedProduct, nil
 }

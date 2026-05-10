@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
+	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
 )
 
 func (r *ProductsRepositoryPostgres) CreateProduct(ctx context.Context, product domain.ProductBase) (domain.ProductBase, error) {
@@ -41,16 +42,7 @@ func (r *ProductsRepositoryPostgres) CreateProduct(ctx context.Context, product 
 	return product, nil
 }
 
-func (r *ProductsRepositoryPostgres) CreateWindow(ctx context.Context, window domain.Window) (domain.Window, error) {
-	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
-	defer cancel()
-
-	tx, err := r.pool.Begin(ctx)
-	if err != nil {
-		return domain.Window{}, fmt.Errorf("CreateWindow in Repo (begin tx): %w", err)
-	}
-	defer tx.Rollback(ctx)
-
+func (r *ProductsRepositoryPostgres) createProductInTx(ctx context.Context, tx core_postgres_pool.Tx, product domain.ProductBase) (uuid.UUID, int, error) {
 	productQuery := `
 		INSERT INTO kudesnik.products (
 			product_id, product_name, price, description, is_visible, category_code, producer_id
@@ -61,39 +53,12 @@ func (r *ProductsRepositoryPostgres) CreateWindow(ctx context.Context, window do
 	var productID uuid.UUID
 	var version int
 
-	err = tx.QueryRow(
+	err := tx.QueryRow(
 		ctx, productQuery,
-		uuid.New(), window.ProductName, window.Price,
-		window.Description, window.IsVisible,
-		window.CategoryCode, window.ProducerID,
+		uuid.New(), product.ProductName, product.Price,
+		product.Description, product.IsVisible,
+		product.CategoryCode, product.ProducerID,
 	).Scan(&productID, &version)
 
-	if err != nil {
-		return domain.Window{}, fmt.Errorf("CreateWindow in Repo (insert product): %w", err)
-	}
-
-	windowQuery := `
-		INSERT INTO kudesnik.windows (
-			window_id, purpose, width, height, material
-		) VALUES ($1, $2, $3, $4, $5);
-	`
-
-	_, err = tx.Exec(
-		ctx, windowQuery,
-		productID, window.Purpose, window.Width,
-		window.Height, window.Material,
-	)
-
-	if err != nil {
-		return domain.Window{}, fmt.Errorf("CreateWindow in Repo (insert window): %w", err)
-	}
-
-	if err = tx.Commit(ctx); err != nil {
-		return domain.Window{}, fmt.Errorf("CreateWindow in Repo (commit): %w", err)
-	}
-
-	window.ID = productID
-	window.Version = version
-
-	return window, nil
+	return productID, version, err
 }

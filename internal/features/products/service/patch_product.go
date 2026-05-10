@@ -17,6 +17,14 @@ func (s *ProductsService) PatchProduct(ctx context.Context, id uuid.UUID, patch 
 	case *domain.ProductBasePatch:
 		patched, err := s.patchProduct(ctx, id, *p)
 		return &patched, err
+
+	case *domain.EntranceDoorPatch:
+		patched, err := s.patchEntranceDoor(ctx, id, *p)
+		return &patched, err
+
+	case *domain.InteriorDoorPatch:
+		patched, err := s.patchInteriorDoor(ctx, id, *p)
+		return &patched, err
 	}
 
 	return nil, fmt.Errorf("unknown product patch")
@@ -56,4 +64,40 @@ func (s *ProductsService) patchProduct(ctx context.Context, id uuid.UUID, patch 
 	}
 
 	return patchedProduct, nil
+}
+
+func (s *ProductsService) patchEntranceDoor(ctx context.Context, id uuid.UUID, patch domain.EntranceDoorPatch) (domain.EntranceDoor, error) {
+	door, err := s.productRepo.GetEntranceDoor(ctx, id)
+	if err != nil {
+		return domain.EntranceDoor{}, fmt.Errorf("failed to get entrance door from repo: %w", err)
+	}
+
+	if err := door.ApplyPatch(&patch); err != nil {
+		return domain.EntranceDoor{}, fmt.Errorf("failed to apply entrance door patch: %w", err)
+	}
+
+	patchedDoor, err := s.productRepo.PatchEntranceDoor(ctx, id, door)
+	if err != nil {
+		return domain.EntranceDoor{}, fmt.Errorf("failed to patch entrance door in repo: %w", err)
+	}
+
+	return patchedDoor, nil
+}
+
+func (s *ProductsService) patchInteriorDoor(ctx context.Context, id uuid.UUID, patch domain.InteriorDoorPatch) (domain.InteriorDoor, error) {
+	door, err := s.productRepo.GetInteriorDoor(ctx, id)
+	if err != nil {
+		return domain.InteriorDoor{}, fmt.Errorf("failed to get interior door from repo: %w", err)
+	}
+
+	if err := door.ApplyPatch(&patch); err != nil {
+		return domain.InteriorDoor{}, fmt.Errorf("failed to apply interior door patch: %w", err)
+	}
+
+	patchedDoor, err := s.productRepo.PatchInteriorDoor(ctx, id, door)
+	if err != nil {
+		return domain.InteriorDoor{}, fmt.Errorf("failed to patch interior door in repo: %w", err)
+	}
+
+	return patchedDoor, nil
 }

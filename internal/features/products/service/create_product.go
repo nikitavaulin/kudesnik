@@ -30,6 +30,14 @@ func (s *ProductsService) createProduct(ctx context.Context, product domain.Prod
 		productBase, err := s.productRepo.CreateProduct(ctx, *p)
 		return &productBase, err
 
+	case *domain.EntranceDoor:
+		door, err := s.productRepo.CreateEntranceDoor(ctx, *p)
+		return &door, err
+
+	case *domain.InteriorDoor:
+		door, err := s.productRepo.CreateInteriorDoor(ctx, *p)
+		return &door, err
+
 	default:
 		return nil, fmt.Errorf("unknown product category")
 	}

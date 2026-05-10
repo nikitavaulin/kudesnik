@@ -22,6 +22,14 @@ func (s *ProductsService) getProduct(ctx context.Context, id uuid.UUID, category
 		window, err := s.productRepo.GetWindow(ctx, id)
 		return &window, err
 
+	case domain.EntranceDoorsCategory:
+		door, err := s.productRepo.GetEntranceDoor(ctx, id)
+		return &door, err
+
+	case domain.InteriorDoorsCategory:
+		door, err := s.productRepo.GetInteriorDoor(ctx, id)
+		return &door, err
+
 	default:
 		product, err := s.productRepo.GetProduct(ctx, id)
 		return &product, err
