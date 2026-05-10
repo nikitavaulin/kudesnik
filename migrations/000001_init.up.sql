@@ -1,9 +1,9 @@
 CREATE SCHEMA kudesnik;
 
 CREATE TABLE kudesnik.product_categories (
-    product_category_id UUID PRIMARY KEY,
+    product_category_code VARCHAR(30) PRIMARY KEY CHECK (product_category_code ~ '^[a-z_-]+$'),
     product_category_name VARCHAR(60) NOT NULL CHECK(char_length(product_category_name) BETWEEN 3 AND 60),
-    installation_price DECIMAL(10,2)
+    installation_price DECIMAL(10,2) DEFAULT 0
 );
 
 CREATE TABLE kudesnik.producers (
@@ -20,10 +20,10 @@ CREATE TABLE kudesnik.products (
     price DECIMAL(10,2),
     description TEXT,
     is_visible BOOLEAN DEFAULT false, 
-	category_id UUID NOT NULL,
+	category_code VARCHAR(30) NOT NULL,
 	producer_id UUID,
 
-	FOREIGN KEY (category_id) REFERENCES kudesnik.product_categories (product_category_id),
+	FOREIGN KEY (category_code) REFERENCES kudesnik.product_categories (product_category_code),
 	FOREIGN KEY (producer_id) REFERENCES kudesnik.producers (producer_id)
 );
 
@@ -142,3 +142,11 @@ CREATE TABLE kudesnik.customer_requests (
     FOREIGN KEY (handler_admin_email) REFERENCES kudesnik.admins(email),
     FOREIGN KEY (customer_phone_number) REFERENCES kudesnik.customers(customer_phone_number)
 );
+
+INSERT INTO kudesnik.product_categories (product_category_code, product_category_name) VALUES
+    ('windows', 'Окна'),
+    ('entrance-doors', 'Входные двери'),
+    ('interior-doors', 'Межкомнатные двери'),
+    ('balconies', 'Балконы'),
+    ('others', 'Другое')
+ON CONFLICT (product_category_code) DO NOTHING;

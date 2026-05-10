@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
@@ -17,24 +16,24 @@ func (r *ProductCategoriesRepository) CreateProductCategory(
 
 	query := `
 		INSERT INTO kudesnik.product_categories 
-		(product_category_id, product_category_name, installation_price)
+		(product_category_code, product_category_name, installation_price)
 		VALUES ($1, $2, $3)
-		RETURNING product_category_id, product_category_name, installation_price;
+		RETURNING product_category_code, product_category_name, installation_price;
 	`
 
 	row := r.pool.QueryRow(
 		ctx, query,
-		uuid.New(), category.CategoryName, category.InstallationPrice,
+		category.CategoryCode, category.CategoryName, category.InstallationPrice,
 	)
 
 	var model ProductCategoriesModel
-	err := row.Scan(&model.ID, &model.CategoryName, &model.InstallationPrice)
+	err := row.Scan(&model.Code, &model.CategoryName, &model.InstallationPrice)
 	if err != nil {
 		return domain.ProductCategory{}, fmt.Errorf("CreateProductCategoryRepo: %w", err)
 	}
 
 	category = *domain.NewProductCategory(
-		model.ID, model.CategoryName, model.InstallationPrice,
+		model.Code, model.CategoryName, model.InstallationPrice,
 	)
 
 	return category, nil

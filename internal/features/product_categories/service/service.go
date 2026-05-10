@@ -3,7 +3,6 @@ package product_categories_service
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
@@ -16,11 +15,11 @@ type ProductCategoriesRepository interface {
 
 	GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error)
 
-	GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error)
+	GetProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode) (domain.ProductCategory, error)
 
-	DeleteProductCategory(ctx context.Context, categoryID uuid.UUID) error
+	DeleteProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode) error
 
-	PatchProductCategory(ctx context.Context, categoryID uuid.UUID, category domain.ProductCategory) (domain.ProductCategory, error)
+	PatchProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode, category domain.ProductCategory) (domain.ProductCategory, error)
 }
 
 func NewProductCategoriesService(categoriesRepository ProductCategoriesRepository) *ProductCategoriesService {

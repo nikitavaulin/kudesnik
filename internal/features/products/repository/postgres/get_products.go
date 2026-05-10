@@ -44,7 +44,7 @@ func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID
 		err := rows.Scan(
 			&productModel.ID, &productModel.Version,
 			&productModel.ProductName, &productModel.Price, &productModel.Description,
-			&productModel.IsVisible, &productModel.CategoryID, &productModel.ProducerID,
+			&productModel.IsVisible, &productModel.CategoryCode, &productModel.ProducerID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("GetProducts from repo: %v: %w", err, core_errors.ErrNotFound)

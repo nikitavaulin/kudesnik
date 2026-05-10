@@ -18,14 +18,14 @@ func UUIDsFromDTOs(dtos ...ProductIdDTORequest) []uuid.UUID {
 }
 
 type ProductDTOResponse struct {
-	ID          string  `json:"id"`
-	Version     int     `json:"version"`
-	ProductName string  `json:"product_name"`
-	Price       float64 `json:"price"`
-	Description *string `json:"description"`
-	IsVisible   bool    `json:"is_visible"`
-	CategoryID  string  `json:"category_id"`
-	ProducerID  *string `json:"producer_id"`
+	ID           string  `json:"id"`
+	Version      int     `json:"version"`
+	ProductName  string  `json:"product_name"`
+	Price        float64 `json:"price"`
+	Description  *string `json:"description"`
+	IsVisible    bool    `json:"is_visible"`
+	CategoryCode string  `json:"category_code"`
+	ProducerID   *string `json:"producer_id"`
 }
 
 func productDtoFromDomain(product domain.ProductBase) ProductDTOResponse {
@@ -37,14 +37,14 @@ func productDtoFromDomain(product domain.ProductBase) ProductDTOResponse {
 	}
 
 	return ProductDTOResponse{
-		ID:          product.ID.String(),
-		Version:     product.Version,
-		ProductName: product.ProductName,
-		Price:       product.Price,
-		Description: product.Description,
-		IsVisible:   product.IsVisible,
-		CategoryID:  product.CategoryID.String(),
-		ProducerID:  producerID,
+		ID:           product.ID.String(),
+		Version:      product.Version,
+		ProductName:  product.ProductName,
+		Price:        product.Price,
+		Description:  product.Description,
+		IsVisible:    product.IsVisible,
+		CategoryCode: product.CategoryCode,
+		ProducerID:   producerID,
 	}
 }
 

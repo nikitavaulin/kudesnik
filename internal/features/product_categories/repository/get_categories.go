@@ -27,7 +27,7 @@ func (r *ProductCategoriesRepository) GetProductCategories(ctx context.Context, 
 		var categoryModel ProductCategoriesModel
 
 		err := rows.Scan(
-			&categoryModel.ID,
+			&categoryModel.Code,
 			&categoryModel.CategoryName,
 			&categoryModel.InstallationPrice,
 		)

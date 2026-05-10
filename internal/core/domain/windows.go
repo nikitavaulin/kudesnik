@@ -34,12 +34,12 @@ func (w *Window) Validate() error {
 		return fmt.Errorf("product base validation failed: %w", err)
 	}
 
-	if w.Width <= 0 {
-		return fmt.Errorf("width must be greater than 0: %w", core_errors.ErrInvalidArgument)
+	if w.Width < 0 {
+		return fmt.Errorf("width cannot be non-negative: %w", core_errors.ErrInvalidArgument)
 	}
 
-	if w.Height <= 0 {
-		return fmt.Errorf("height must be greater than 0: %w", core_errors.ErrInvalidArgument)
+	if w.Height < 0 {
+		return fmt.Errorf("height cannot be non-negative: %w", core_errors.ErrInvalidArgument)
 	}
 
 	if w.Purpose == "" {
@@ -50,4 +50,68 @@ func (w *Window) Validate() error {
 }
 
 func (w *Window) GetBase() *ProductBase                { return &w.ProductBase }
-func (w *Window) GetCategoryName() ProductCategoryName { return WindowsCategory }
+func (w *Window) GetCategoryName() ProductCategoryCode { return WindowsCategory }
+
+type WindowPatch struct {
+	ProductBasePatch
+	Purpose  Nullable[string] `json:"purpose"`
+	Width    Nullable[int]    `json:"width"`
+	Height   Nullable[int]    `json:"height"`
+	Material Nullable[string] `json:"material"`
+}
+
+func (w *WindowPatch) Validate() error {
+	if err := w.ProductBasePatch.Validate(); err != nil {
+		return fmt.Errorf("product base validation failed: %w", err)
+	}
+
+	if w.Width.Set && *w.Width.Value < 0 {
+		return fmt.Errorf("width cannot be non-negative: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if w.Height.Set && *w.Height.Value < 0 {
+		return fmt.Errorf("height cannot be non-negative: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if w.Purpose.Set && *w.Purpose.Value == "" {
+		return fmt.Errorf("purpose is required: %w", core_errors.ErrInvalidArgument)
+	}
+
+	return nil
+}
+
+func (w *Window) ApplyPatch(windowPatch *WindowPatch) error {
+	if err := windowPatch.Validate(); err != nil {
+		return fmt.Errorf("invalid window patch: %w", err)
+	}
+
+	tmp := *w
+
+	if err := tmp.ProductBase.ApplyPatch(&windowPatch.ProductBasePatch); err != nil {
+		return fmt.Errorf("failed to patch product base: %w", err)
+	}
+
+	if windowPatch.Purpose.Set {
+		tmp.Purpose = *windowPatch.Purpose.Value
+	}
+
+	if windowPatch.Width.Set {
+		tmp.Width = *windowPatch.Width.Value
+	}
+
+	if windowPatch.Height.Set {
+		tmp.Height = *windowPatch.Height.Value
+	}
+
+	if windowPatch.Material.Set {
+		tmp.Material = *windowPatch.Material.Value
+	}
+
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("invalid window after patch: %w", err)
+	}
+
+	*w = tmp
+
+	return nil
+}

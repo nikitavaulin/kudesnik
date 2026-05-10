@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 )
 
@@ -27,4 +28,15 @@ func GetUUIDFromPath(r *http.Request, key string) (uuid.UUID, error) {
 		)
 	}
 	return ID, nil
+}
+
+func GetCategoryCodeFromPath(r *http.Request) (domain.ProductCategoryCode, error) {
+	value := r.PathValue("category_code")
+	if value == "" {
+		return "", fmt.Errorf("category_code cannot be empty: %w", core_errors.ErrInvalidArgument)
+	}
+	if err := domain.ValidateCategoryCode(value); err != nil {
+		return "", fmt.Errorf("invalid category_code: %v: %w", err, core_errors.ErrInvalidArgument)
+	}
+	return domain.ProductCategoryCode(value), nil
 }

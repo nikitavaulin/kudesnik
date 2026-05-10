@@ -6,21 +6,21 @@ import (
 )
 
 type ProductModel struct {
-	ID          uuid.UUID
-	Version     int
-	ProductName string
-	Price       float64
-	Description *string
-	IsVisible   bool
-	CategoryID  uuid.UUID
-	ProducerID  *uuid.UUID
+	ID           uuid.UUID
+	Version      int
+	ProductName  string
+	Price        float64
+	Description  *string
+	IsVisible    bool
+	CategoryCode string
+	ProducerID   *uuid.UUID
 }
 
 func productDomainFromModel(m ProductModel) domain.ProductBase {
 	return *domain.NewProduct(
 		m.ID, m.Version,
 		m.ProductName, m.Price, m.Description,
-		m.IsVisible, m.CategoryID, m.ProducerID,
+		m.IsVisible, m.CategoryCode, m.ProducerID,
 	)
 }
 

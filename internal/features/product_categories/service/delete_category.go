@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
+	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
-func (s *ProductCategoriesService) DeleteProductCategory(ctx context.Context, categoryID uuid.UUID) error {
-	if err := s.categoriesRepository.DeleteProductCategory(ctx, categoryID); err != nil {
+func (s *ProductCategoriesService) DeleteProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode) error {
+	if err := s.categoriesRepository.DeleteProductCategory(ctx, categoryCode); err != nil {
 		return fmt.Errorf("failed to delete category: %w", err)
 	}
 	return nil

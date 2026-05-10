@@ -3,7 +3,6 @@ package products_transport_http
 import (
 	"net/http"
 
-	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
 	core_http_request "github.com/nikitavaulin/kudesnik/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
@@ -18,7 +17,11 @@ func (h *ProductsHTTPHandler) GetProduct(rw http.ResponseWriter, r *http.Request
 
 	log.Debug("invoke get product handler")
 
-	category := domain.GetCategoryName(core_http_request.GetStringQueryParam(r, "category"))
+	category, err := core_http_request.GetCategoryCodeFromPath(r)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to get category_code")
+		return
+	}
 
 	productID, err := core_http_request.GetUUIDFromPath(r, "id")
 	if err != nil {

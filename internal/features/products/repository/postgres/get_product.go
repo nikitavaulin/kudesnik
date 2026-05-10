@@ -25,7 +25,7 @@ func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUI
 	err := row.Scan(
 		&productModel.ID, &productModel.Version,
 		&productModel.ProductName, &productModel.Price, &productModel.Description,
-		&productModel.IsVisible, &productModel.CategoryID, &productModel.ProducerID,
+		&productModel.IsVisible, &productModel.CategoryCode, &productModel.ProducerID,
 	)
 	if err != nil {
 		return domain.ProductBase{}, fmt.Errorf("GetProduct from repo: %v: %w", err, core_errors.ErrNotFound)
@@ -49,6 +49,7 @@ func (r *ProductsRepositoryPostgres) GetWindow(ctx context.Context, id uuid.UUID
             p.product_name,
             p.price,
 			p.description,
+			p.category_code,
             p.is_visible,
             p.version
         FROM kudesnik.windows w
@@ -69,6 +70,7 @@ func (r *ProductsRepositoryPostgres) GetWindow(ctx context.Context, id uuid.UUID
 		&window.ProductName,
 		&window.Price,
 		&window.Description,
+		&window.CategoryCode,
 		&window.IsVisible,
 		&window.Version,
 	)

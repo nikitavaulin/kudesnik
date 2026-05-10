@@ -12,12 +12,12 @@ import (
 )
 
 type PatchProductRequestDTO struct {
-	ProductName core_http_types.Nullable[string]
-	Price       core_http_types.Nullable[float64]
-	Description core_http_types.Nullable[string]
-	IsVisible   core_http_types.Nullable[bool]
-	CategoryID  core_http_types.Nullable[uuid.UUID]
-	ProducerID  core_http_types.Nullable[uuid.UUID]
+	ProductName  core_http_types.Nullable[string]
+	Price        core_http_types.Nullable[float64]
+	Description  core_http_types.Nullable[string]
+	IsVisible    core_http_types.Nullable[bool]
+	CategoryCode core_http_types.Nullable[string]
+	ProducerID   core_http_types.Nullable[uuid.UUID]
 }
 
 type PatchProductResponseDTO ProductDTOResponse
@@ -29,38 +29,41 @@ func (h *ProductsHTTPHandler) PatchProduct(rw http.ResponseWriter, r *http.Reque
 
 	log.Debug("invoke patch product handler")
 
-	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
+	productID, err := core_http_request.GetUUIDFromPath(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get productID")
 		return
 	}
 
-	var productPatchDTO PatchProductRequestDTO
+	category, err := core_http_request.GetCategoryCodeFromPath(r)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to get category_code")
+		return
+	}
 
-	if err := core_http_request.DecodeAndValidateRequest(r, &productPatchDTO); err != nil {
+	patch := domain.GetProductPatchEmptyInstance(string(category))
+
+	if err := core_http_request.DecodeRequest(r, &patch); err != nil {
 		responseHandler.ErrorResponse(err, "failed to decode and validate patch request")
 		return
 	}
 
-	patch := patchDomainFromDTO(productPatchDTO)
-
-	patchedProduct, err := h.productsService.PatchProduct(ctx, categoryID, patch)
+	patchedProduct, err := h.productsService.PatchProduct(ctx, productID, patch)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to patch product")
 		return
 	}
 
-	productDTO := PatchProductResponseDTO(productDtoFromDomain(patchedProduct))
-	responseHandler.JSONResponse(productDTO, http.StatusOK)
+	responseHandler.JSONResponse(patchedProduct, http.StatusOK)
 }
 
-func patchDomainFromDTO(productPatchDTO PatchProductRequestDTO) domain.ProductPatch {
+func patchDomainFromDTO(productPatchDTO PatchProductRequestDTO) domain.ProductBasePatch {
 	return *domain.NewProductPatch(
 		productPatchDTO.ProductName.ToDomain(),
 		productPatchDTO.Price.ToDomain(),
 		productPatchDTO.Description.ToDomain(),
 		productPatchDTO.IsVisible.ToDomain(),
-		productPatchDTO.CategoryID.ToDomain(),
+		productPatchDTO.CategoryCode.ToDomain(),
 		productPatchDTO.ProducerID.ToDomain(),
 	)
 }

@@ -14,24 +14,24 @@ func (r *ProductsRepositoryPostgres) CreateProduct(ctx context.Context, product 
 
 	query := `
 		INSERT INTO kudesnik.products (
-			product_id, product_name, price, description, is_visible, category_id, producer_id
+			product_id, product_name, price, description, is_visible, category_code, producer_id
 		) VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING
-			product_id, version, product_name, price, description, is_visible, category_id, producer_id;
+			product_id, version, product_name, price, description, is_visible, category_code, producer_id;
 	`
 
 	row := r.pool.QueryRow(
 		ctx, query,
 		uuid.New(), product.ProductName, product.Price,
 		product.Description, product.IsVisible,
-		product.CategoryID, product.ProducerID,
+		product.CategoryCode, product.ProducerID,
 	)
 
 	var model ProductModel
 	err := row.Scan(
 		&model.ID, &model.Version,
 		&model.ProductName, &model.Price, &model.Description,
-		&model.IsVisible, &model.CategoryID, &model.ProducerID,
+		&model.IsVisible, &model.CategoryCode, &model.ProducerID,
 	)
 	if err != nil {
 		return domain.ProductBase{}, fmt.Errorf("CreateProduct in Repo: %w", err)
@@ -53,7 +53,7 @@ func (r *ProductsRepositoryPostgres) CreateWindow(ctx context.Context, window do
 
 	productQuery := `
 		INSERT INTO kudesnik.products (
-			product_id, product_name, price, description, is_visible, category_id, producer_id
+			product_id, product_name, price, description, is_visible, category_code, producer_id
 		) VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING product_id, version;
 	`
@@ -65,7 +65,7 @@ func (r *ProductsRepositoryPostgres) CreateWindow(ctx context.Context, window do
 		ctx, productQuery,
 		uuid.New(), window.ProductName, window.Price,
 		window.Description, window.IsVisible,
-		window.CategoryID, window.ProducerID,
+		window.CategoryCode, window.ProducerID,
 	).Scan(&productID, &version)
 
 	if err != nil {

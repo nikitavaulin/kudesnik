@@ -18,15 +18,19 @@ func (h *ProductsHTTPHandler) CreateProduct(rw http.ResponseWriter, r *http.Requ
 
 	logger.Debug("invoke create product handler")
 
-	category := core_http_request.GetStringQueryParam(r, "category")
-	product := domain.GetProductEmptyInstance(category)
+	category, err := core_http_request.GetCategoryCodeFromPath(r)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to get category_code")
+		return
+	}
+	product := domain.GetProductEmptyInstance(string(category))
 
 	if err := core_http_request.DecodeRequest(r, &product); err != nil {
 		responseHandler.ErrorResponse(err, "failed to decode and validate HTTP request")
 		return
 	}
 
-	product, err := h.productsService.CreateProduct(ctx, product)
+	product, err = h.productsService.CreateProduct(ctx, product)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to create product")
 		return

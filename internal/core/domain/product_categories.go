@@ -3,7 +3,6 @@ package domain
 import (
 	"fmt"
 
-	"github.com/google/uuid"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 	core_validation "github.com/nikitavaulin/kudesnik/internal/core/tools/validation"
 )
@@ -14,24 +13,27 @@ const (
 )
 
 type ProductCategory struct {
-	ID                uuid.UUID
+	CategoryCode      string
 	CategoryName      string
 	InstallationPrice float64
 }
 
-func NewProductCategoryUninitialized(name string, installationPrice float64) *ProductCategory {
-	return NewProductCategory(UninitializedID, name, installationPrice)
-}
-
-func NewProductCategory(id uuid.UUID, name string, installationPrice float64) *ProductCategory {
+func NewProductCategory(code string, name string, installationPrice float64) *ProductCategory {
 	return &ProductCategory{
-		ID:                id,
+		CategoryCode:      code,
 		CategoryName:      name,
 		InstallationPrice: installationPrice,
 	}
 }
 
 func (c *ProductCategory) Validate() error {
+	if err := ValidateCategoryCode(c.CategoryCode); err != nil {
+		return fmt.Errorf(
+			"invalid category code: %w",
+			core_errors.ErrInvalidArgument,
+		)
+	}
+
 	nameLength := len([]rune(c.CategoryName))
 	err := core_validation.ValidateIntInBounds(nameLength, MinProductCategoryNameLength, MaxProductCategoryNameLength)
 	if err != nil {

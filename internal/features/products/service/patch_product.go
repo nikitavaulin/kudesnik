@@ -8,13 +8,45 @@ import (
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
-func (s *ProductsService) PatchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductPatch) (domain.ProductBase, error) {
+func (s *ProductsService) PatchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductPatch) (domain.Product, error) {
+	switch p := patch.(type) {
+	case *domain.WindowPatch:
+		patched, err := s.patchWindow(ctx, id, *p)
+		return &patched, err
+
+	case *domain.ProductBasePatch:
+		patched, err := s.patchProduct(ctx, id, *p)
+		return &patched, err
+	}
+
+	return nil, fmt.Errorf("unknown product patch")
+}
+
+func (s *ProductsService) patchWindow(ctx context.Context, id uuid.UUID, patch domain.WindowPatch) (domain.Window, error) {
+	window, err := s.productRepo.GetWindow(ctx, id)
+	if err != nil {
+		return domain.Window{}, fmt.Errorf("failed to get window from repo: %w", err)
+	}
+
+	if err := window.ApplyPatch(&patch); err != nil {
+		return domain.Window{}, fmt.Errorf("failed to apply window patch: %w", err)
+	}
+
+	patchedProduct, err := s.productRepo.PatchWindow(ctx, id, window)
+	if err != nil {
+		return domain.Window{}, fmt.Errorf("failed to patch window in repo: %w", err)
+	}
+
+	return patchedProduct, nil
+}
+
+func (s *ProductsService) patchProduct(ctx context.Context, id uuid.UUID, patch domain.ProductBasePatch) (domain.ProductBase, error) {
 	product, err := s.productRepo.GetProduct(ctx, id)
 	if err != nil {
 		return domain.ProductBase{}, fmt.Errorf("failed to get product from repo: %w", err)
 	}
 
-	if err := product.ApplyPatch(patch); err != nil {
+	if err := product.ApplyPatch(&patch); err != nil {
 		return domain.ProductBase{}, fmt.Errorf("failed to apply product patch: %w", err)
 	}
 
@@ -24,5 +56,4 @@ func (s *ProductsService) PatchProduct(ctx context.Context, id uuid.UUID, patch 
 	}
 
 	return patchedProduct, nil
-
 }
