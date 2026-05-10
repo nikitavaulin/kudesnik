@@ -30,6 +30,10 @@ func (s *ProductsService) getProduct(ctx context.Context, id uuid.UUID, category
 		door, err := s.productRepo.GetInteriorDoor(ctx, id)
 		return &door, err
 
+	case domain.BalconiesCategory:
+		balcony, err := s.productRepo.GetBalcony(ctx, id)
+		return &balcony, err
+
 	default:
 		product, err := s.productRepo.GetProduct(ctx, id)
 		return &product, err

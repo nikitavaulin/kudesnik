@@ -38,6 +38,10 @@ func (s *ProductsService) createProduct(ctx context.Context, product domain.Prod
 		door, err := s.productRepo.CreateInteriorDoor(ctx, *p)
 		return &door, err
 
+	case *domain.Balcony:
+		balcony, err := s.productRepo.CreateBalcony(ctx, *p)
+		return &balcony, err
+
 	default:
 		return nil, fmt.Errorf("unknown product category")
 	}

@@ -25,6 +25,10 @@ func (s *ProductsService) PatchProduct(ctx context.Context, id uuid.UUID, patch 
 	case *domain.InteriorDoorPatch:
 		patched, err := s.patchInteriorDoor(ctx, id, *p)
 		return &patched, err
+
+	case *domain.BalconyPatch:
+		patched, err := s.patchBalcony(ctx, id, *p)
+		return &patched, err
 	}
 
 	return nil, fmt.Errorf("unknown product patch")
@@ -100,4 +104,22 @@ func (s *ProductsService) patchInteriorDoor(ctx context.Context, id uuid.UUID, p
 	}
 
 	return patchedDoor, nil
+}
+
+func (s *ProductsService) patchBalcony(ctx context.Context, id uuid.UUID, patch domain.BalconyPatch) (domain.Balcony, error) {
+	balcony, err := s.productRepo.GetBalcony(ctx, id)
+	if err != nil {
+		return domain.Balcony{}, fmt.Errorf("failed to get balcony from repo: %w", err)
+	}
+
+	if err := balcony.ApplyPatch(&patch); err != nil {
+		return domain.Balcony{}, fmt.Errorf("failed to apply balcony patch: %w", err)
+	}
+
+	patchedBalcony, err := s.productRepo.PatchBalcony(ctx, id, balcony)
+	if err != nil {
+		return domain.Balcony{}, fmt.Errorf("failed to patch balcony in repo: %w", err)
+	}
+
+	return patchedBalcony, nil
 }

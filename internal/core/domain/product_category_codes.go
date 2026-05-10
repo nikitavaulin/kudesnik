@@ -23,6 +23,7 @@ var categoriesEnum map[ProductCategoryCode]any = map[ProductCategoryCode]any{
 	WindowsCategory:       struct{}{},
 	EntranceDoorsCategory: struct{}{},
 	InteriorDoorsCategory: struct{}{},
+	BalconiesCategory:     struct{}{},
 	OthersCategory:        struct{}{},
 }
 

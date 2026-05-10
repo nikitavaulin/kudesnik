@@ -20,6 +20,8 @@ func GetProductEmptyInstance(categoryCode string) Product {
 		return &EntranceDoor{}
 	case InteriorDoorsCategory:
 		return &InteriorDoor{}
+	case BalconiesCategory:
+		return &Balcony{}
 	default:
 		return &ProductBase{}
 	}
@@ -34,6 +36,8 @@ func GetProductPatchEmptyInstance(categoryCode string) ProductPatch {
 		return &EntranceDoorPatch{}
 	case InteriorDoorsCategory:
 		return &InteriorDoorPatch{}
+	case BalconiesCategory:
+		return &BalconyPatch{}
 	default:
 		return &ProductBasePatch{}
 	}

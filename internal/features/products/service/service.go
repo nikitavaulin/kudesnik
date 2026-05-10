@@ -16,12 +16,14 @@ type ProductsRepository interface {
 	CreateWindow(ctx context.Context, product domain.Window) (domain.Window, error)
 	CreateEntranceDoor(ctx context.Context, door domain.EntranceDoor) (domain.EntranceDoor, error)
 	CreateInteriorDoor(ctx context.Context, door domain.InteriorDoor) (domain.InteriorDoor, error)
+	CreateBalcony(ctx context.Context, balcony domain.Balcony) (domain.Balcony, error)
 
 	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error)
 	GetProduct(ctx context.Context, id uuid.UUID) (domain.ProductBase, error)
 	GetWindow(ctx context.Context, id uuid.UUID) (domain.Window, error)
 	GetEntranceDoor(ctx context.Context, id uuid.UUID) (domain.EntranceDoor, error)
 	GetInteriorDoor(ctx context.Context, id uuid.UUID) (domain.InteriorDoor, error)
+	GetBalcony(ctx context.Context, id uuid.UUID) (domain.Balcony, error)
 
 	DeleteProduct(ctx context.Context, id uuid.UUID) error
 	DeleteProducts(ctx context.Context, IDs []uuid.UUID) error
@@ -33,6 +35,7 @@ type ProductsRepository interface {
 	PatchWindow(ctx context.Context, id uuid.UUID, product domain.Window) (domain.Window, error)
 	PatchEntranceDoor(ctx context.Context, id uuid.UUID, door domain.EntranceDoor) (domain.EntranceDoor, error)
 	PatchInteriorDoor(ctx context.Context, id uuid.UUID, door domain.InteriorDoor) (domain.InteriorDoor, error)
+	PatchBalcony(ctx context.Context, id uuid.UUID, balcony domain.Balcony) (domain.Balcony, error)
 }
 
 func NewProductsService(productRepo ProductsRepository) *ProductsService {
