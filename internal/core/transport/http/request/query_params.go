@@ -58,3 +58,15 @@ func GetLimitOffsetParams(r *http.Request) (*int, *int, error) {
 
 	return limit, offset, nil
 }
+
+func GetStringParam(r *http.Request, key string) string {
+	return r.URL.Query().Get(key)
+}
+
+func GetStringParamOrNil(r *http.Request, key string) *string {
+	value := GetStringParam(r, key)
+	if len(value) == 0 {
+		return nil
+	}
+	return &value
+}
