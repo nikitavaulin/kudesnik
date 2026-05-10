@@ -66,3 +66,11 @@ func (p *Pool) QueryRow(ctx context.Context, sql string, args ...any) core_postg
 func (p *Pool) OperationTime() time.Duration {
 	return p.opTime
 }
+
+func (p *Pool) Begin(ctx context.Context) (core_postgres_pool.Tx, error) {
+	tx, err := p.Pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin transaction: %w", err)
+	}
+	return &Tx{tx: tx}, nil
+}
