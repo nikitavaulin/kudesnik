@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	tools_jwt "github.com/nikitavaulin/kudesnik/internal/core/tools/jwt"
 	core_http_middleware "github.com/nikitavaulin/kudesnik/internal/core/transport/http/middleware"
 )
 
@@ -17,22 +18,24 @@ var (
 
 type APIVersionRouter struct {
 	*http.ServeMux
-	apiVersion ApiVersion
-	middleware []core_http_middleware.Middleware
+	apiVersion  ApiVersion
+	jwtProvider *tools_jwt.JwtProvider
+	middleware  []core_http_middleware.Middleware
 }
 
-func NewAPIVersionRouter(apiVersion ApiVersion, middlewares ...core_http_middleware.Middleware) *APIVersionRouter {
+func NewAPIVersionRouter(apiVersion ApiVersion, jwt *tools_jwt.JwtProvider, middlewares ...core_http_middleware.Middleware) *APIVersionRouter {
 	return &APIVersionRouter{
-		ServeMux:   http.NewServeMux(),
-		apiVersion: apiVersion,
-		middleware: middlewares,
+		ServeMux:    http.NewServeMux(),
+		apiVersion:  apiVersion,
+		jwtProvider: jwt,
+		middleware:  middlewares,
 	}
 }
 
 func (r *APIVersionRouter) RegisterRoutes(routes ...Route) {
 	for _, route := range routes {
 		pattern := fmt.Sprintf("%s %s", route.Method, route.Path)
-		r.Handle(pattern, route.WithMiddleware())
+		r.Handle(pattern, route.WithMiddleware(r.jwtProvider))
 	}
 }
 
