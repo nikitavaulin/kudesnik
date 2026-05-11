@@ -9,8 +9,12 @@ import (
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
 	core_pgx_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool/pgx"
+	tools_jwt "github.com/nikitavaulin/kudesnik/internal/core/tools/jwt"
 	core_http_middleware "github.com/nikitavaulin/kudesnik/internal/core/transport/http/middleware"
 	core_http_server "github.com/nikitavaulin/kudesnik/internal/core/transport/http/server"
+	admin_repository_postgres "github.com/nikitavaulin/kudesnik/internal/features/admin/repository/postgres"
+	admin_service "github.com/nikitavaulin/kudesnik/internal/features/admin/service"
+	admin_transport_http "github.com/nikitavaulin/kudesnik/internal/features/admin/transport/http"
 	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
 	product_categories_service "github.com/nikitavaulin/kudesnik/internal/features/product_categories/service"
 	product_categories_transport_http "github.com/nikitavaulin/kudesnik/internal/features/product_categories/transport"
@@ -39,9 +43,11 @@ func main() {
 	}
 	defer pool.Close()
 
+	jwtProvider := tools_jwt.NewJWTProvider(tools_jwt.NewConfigMust())
+
 	logger.Debug("Starting Kudesnik application!")
 
-	logger.Debug("initializing features", zap.String("feature", "Product-Categories"))
+	logger.Debug("initializing features")
 
 	productsCategoriesRepo := product_categories_repository.NewProductCategoriesRepository(pool)
 	productsCategoriesService := product_categories_service.NewProductCategoriesService(productsCategoriesRepo)
@@ -51,9 +57,14 @@ func main() {
 	productsSevice := products_service.NewProductsService(productsRepo)
 	productsTransport := products_transport_http.NewProductsHTTPHandler(productsSevice)
 
-	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
+	adminsRepo := admin_repository_postgres.NewAdminRepositoryPostgres(pool)
+	adminsService := admin_service.NewAdminServie(adminsRepo, jwtProvider)
+	adminsTransport := admin_transport_http.NewAdminTrasnsportHTTPHandler(adminsService)
+
+	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1, jwtProvider)
 	apiVersionRouter.RegisterRoutes(productsCategoriesHTTPTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(productsTransport.Routes()...)
+	apiVersionRouter.RegisterRoutes(adminsTransport.Routes()...)
 
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(
