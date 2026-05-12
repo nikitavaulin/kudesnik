@@ -27,8 +27,6 @@ func NewAdmin(email, fullName, passwordHash string, adminType Role) *Admin {
 }
 
 const (
-	MinFullNameLength = 1
-	MaxFullNameLength = 60
 	MinPasswordLength = 8
 	MaxPasswordLength = 72
 )
@@ -47,12 +45,8 @@ func ValidateAdmin(email, fullName, password string, adminType Role) error {
 		return fmt.Errorf("invalid email: %v: %w", err, core_errors.ErrInvalidArgument)
 	}
 
-	if fullName == "" {
-		return fmt.Errorf("fullname cannot be empty: %w", core_errors.ErrInvalidArgument)
-	}
-
-	if err := core_validation.ValidateIntInBounds(len(fullName), MinFullNameLength, MaxFullNameLength); err != nil {
-		return fmt.Errorf("invalid fullname length: %v: %w", err, core_errors.ErrInvalidArgument)
+	if err := ValidateFullName(fullName); err != nil {
+		return fmt.Errorf("invalid fullname: %w", err)
 	}
 
 	if password == "" {
@@ -108,9 +102,8 @@ func (p *AdminPatch) Validate() error {
 	}
 
 	if p.FullName.Set && p.FullName.Value != nil {
-		fullNameLength := len([]rune(*p.FullName.Value))
-		if err := core_validation.ValidateIntInBounds(fullNameLength, MinFullNameLength, MaxFullNameLength); err != nil {
-			return fmt.Errorf("invalid fullname length in patch: %v: %w", err, core_errors.ErrInvalidArgument)
+		if err := ValidateFullName(*p.FullName.Value); err != nil {
+			return fmt.Errorf("invalid fullname: %w", err)
 		}
 	}
 

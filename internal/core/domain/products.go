@@ -25,13 +25,14 @@ type ProductBase struct {
 }
 
 type ProductBaseDetailed struct {
-	ProductBase
+	ProductName string  `json:"product_name"`
+	Price       float64 `json:"price"`
 	ProductDetails
 }
 
 type ProductDetails struct {
-	CategoryName        string `json:"category_name"`
-	ProducerCompanyName string `json:"producer_company_name"`
+	CategoryName        string  `json:"category_name"`
+	ProducerCompanyName *string `json:"producer_company_name"`
 }
 
 func (p *ProductBase) GetBase() *ProductBase                { return p }

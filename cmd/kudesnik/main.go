@@ -15,6 +15,9 @@ import (
 	admin_repository_postgres "github.com/nikitavaulin/kudesnik/internal/features/admin/repository/postgres"
 	admin_service "github.com/nikitavaulin/kudesnik/internal/features/admin/service"
 	admin_transport_http "github.com/nikitavaulin/kudesnik/internal/features/admin/transport/http"
+	customer_requests_repository_postgres "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/repository/postgres"
+	customer_requests_service "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/service"
+	customer_requests_transport_http "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/transport/http"
 	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
 	product_categories_service "github.com/nikitavaulin/kudesnik/internal/features/product_categories/service"
 	product_categories_transport_http "github.com/nikitavaulin/kudesnik/internal/features/product_categories/transport"
@@ -61,10 +64,15 @@ func main() {
 	adminsService := admin_service.NewAdminServie(adminsRepo, jwtProvider)
 	adminsTransport := admin_transport_http.NewAdminTrasnsportHTTPHandler(adminsService)
 
+	customerRequestsRepo := customer_requests_repository_postgres.NewCustomerRequestsRepository(pool)
+	customerRequestsService := customer_requests_service.NewCustomerRequestsService(customerRequestsRepo, productsRepo)
+	customerRequestsTransport := customer_requests_transport_http.NewCustomerRequestsTransportHTTP(customerRequestsService)
+
 	apiVersionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1, jwtProvider)
 	apiVersionRouter.RegisterRoutes(productsCategoriesHTTPTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(productsTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(adminsTransport.Routes()...)
+	apiVersionRouter.RegisterRoutes(customerRequestsTransport.Routes()...)
 
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(

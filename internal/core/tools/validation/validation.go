@@ -3,6 +3,8 @@ package core_validation
 import (
 	"fmt"
 	"regexp"
+
+	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 )
 
 func ValidateIntInBounds(number, minValue, maxValue int) error {
@@ -37,6 +39,28 @@ func ValidateEmail(email string) error {
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if !emailRegex.MatchString(email) {
 		return fmt.Errorf("email dismatch pattern")
+	}
+
+	return nil
+}
+
+const (
+	MinPhoneLength = 10
+	MaxPhoneLength = 15
+)
+
+func ValidatePhoneNumber(phone string) error {
+	if phone == "" {
+		return fmt.Errorf("phone number cannot be empty: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if err := ValidateIntInBounds(len(phone), MinPhoneLength, MaxPhoneLength); err != nil {
+		return fmt.Errorf("invalid phone length: %v: %w", err, core_errors.ErrInvalidArgument)
+	}
+
+	phoneRegex := regexp.MustCompile(`^\+[0-9]+$`)
+	if !phoneRegex.MatchString(phone) {
+		return fmt.Errorf("dismatch phone number pattern: %w", core_errors.ErrInvalidArgument)
 	}
 
 	return nil
