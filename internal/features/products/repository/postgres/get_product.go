@@ -40,51 +40,37 @@ func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUI
 	return product, nil
 }
 
-func (r *ProductsRepositoryPostgres) GetWindow(ctx context.Context, id uuid.UUID) (domain.Window, error) {
+func (r *ProductsRepositoryPostgres) GetProductDetailed(ctx context.Context, id uuid.UUID) (domain.ProductBaseDetailed, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
 	defer cancel()
 
 	query := `
-        SELECT 
-            w.window_id,
-            w.purpose,
-            w.width,
-            w.height,
-            w.material,
-            p.product_name,
-            p.price,
-			p.description,
-			p.category_code,
-            p.is_visible,
-            p.version
-        FROM kudesnik.windows w
-        INNER JOIN kudesnik.products p ON w.window_id = p.product_id
-        WHERE w.window_id = $1
-    `
+		SELECT 
+			p.product_name as product_name,
+			p.price,
+			c.product_category_name as category_name,
+			pc.company_name as producer_company_name
+		FROM kudesnik.products p
+		LEFT JOIN kudesnik.product_categories c ON p.category_code = c.product_category_code
+		LEFT JOIN kudesnik.producers pc ON p.producer_id = pc.producer_id
+		WHERE p.product_id = $1
+	`
 
-	row := r.pool.QueryRow(ctx, query, id)
+	var product domain.ProductBaseDetailed
 
-	var window domain.Window
-
-	err := row.Scan(
-		&window.ID,
-		&window.Purpose,
-		&window.Width,
-		&window.Height,
-		&window.Material,
-		&window.ProductName,
-		&window.Price,
-		&window.Description,
-		&window.CategoryCode,
-		&window.IsVisible,
-		&window.Version,
+	err := r.pool.QueryRow(ctx, query, id).Scan(
+		&product.ProductName,
+		&product.Price,
+		&product.CategoryName,
+		&product.ProducerCompanyName,
 	)
+
 	if err != nil {
-		if errors.Is(err, core_postgres_pool.ErrNoRows) {
-			return domain.Window{}, fmt.Errorf("Get window from repo: %v: %w", err, core_errors.ErrNotFound)
+		if err == core_postgres_pool.ErrNoRows {
+			return domain.ProductBaseDetailed{}, fmt.Errorf("product with id %s not found: %w", id, core_errors.ErrNotFound)
 		}
-		return domain.Window{}, fmt.Errorf("Get window from repo: %w", err)
+		return domain.ProductBaseDetailed{}, fmt.Errorf("failed to get product detailed: %w", err)
 	}
 
-	return window, nil
+	return product, nil
 }
