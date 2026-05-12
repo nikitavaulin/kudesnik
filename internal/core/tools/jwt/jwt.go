@@ -28,19 +28,17 @@ func (j *JwtProvider) GenerateToken(claims *Claims) (string, error) {
 }
 
 func (j *JwtProvider) DecodeClaims(token string) (*Claims, error) {
-	jwtToken, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
+	claims := &Claims{}
+
+	jwtToken, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (any, error) {
 		return j.secret, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse jwt token: %w", err)
 	}
+
 	if !jwtToken.Valid {
 		return nil, fmt.Errorf("invalid jwt token")
-	}
-
-	claims, ok := jwtToken.Claims.(*Claims)
-	if !ok {
-		return nil, fmt.Errorf("failed to convert claims to MapClaims")
 	}
 
 	return claims, nil

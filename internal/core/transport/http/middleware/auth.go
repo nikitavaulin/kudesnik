@@ -1,6 +1,7 @@
 package core_http_middleware
 
 import (
+	"fmt"
 	"net/http"
 	"slices"
 	"strings"
@@ -30,7 +31,8 @@ func Authenticate(jwtProvider *tools_jwt.JwtProvider) MiddlewareFunc {
 
 			claims, err := jwtProvider.DecodeClaims(token)
 			if err != nil {
-				responseHandler.ErrorResponse(core_errors.ErrUnauthorized, "invalid authorization token")
+				err = fmt.Errorf("failed to decode token and claims: %v: %w", err, core_errors.ErrUnauthorized)
+				responseHandler.ErrorResponse(err, "invalid authorization token")
 				return
 			}
 
