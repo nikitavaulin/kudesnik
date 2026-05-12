@@ -9,6 +9,8 @@ type AdminResponseDTO struct {
 	AdminType domain.Role `json:"admin_type"`
 }
 
+type AdminsRepsonseDTO []AdminResponseDTO
+
 func toAdminResponseDTO(admin domain.Admin) AdminResponseDTO {
 	return AdminResponseDTO{
 		ID:        admin.ID.String(),
@@ -16,4 +18,12 @@ func toAdminResponseDTO(admin domain.Admin) AdminResponseDTO {
 		FullName:  admin.FullName,
 		AdminType: admin.AdminType,
 	}
+}
+
+func toAdminsResponseDTO(admins []domain.Admin) []AdminResponseDTO {
+	dtos := make([]AdminResponseDTO, len(admins))
+	for i, admin := range admins {
+		dtos[i] = toAdminResponseDTO(admin)
+	}
+	return dtos
 }

@@ -58,9 +58,11 @@ func (h *ProductsHTTPHandler) Routes() []core_http_server.Route {
 			Handler: h.DeleteProducts,
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/products/visibility/{id}",
-			Handler: h.UpdateProductVisability,
+			Method:       http.MethodPatch,
+			Path:         "/products/visibility/p/{id}",
+			Handler:      h.UpdateProductVisability,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.ManagerRole, domain.AdminRole},
 		},
 		{
 			Method:  http.MethodPatch,

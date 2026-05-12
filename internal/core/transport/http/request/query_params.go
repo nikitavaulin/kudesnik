@@ -63,6 +63,7 @@ func GetStringQueryParam(r *http.Request, key string) string {
 	return r.URL.Query().Get(key)
 }
 
+// GetStringParamOrNil return string query param or nil by key
 func GetStringParamOrNil(r *http.Request, key string) *string {
 	value := GetStringQueryParam(r, key)
 	if len(value) == 0 {

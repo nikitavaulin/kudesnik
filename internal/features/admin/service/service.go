@@ -15,8 +15,13 @@ type AdminService struct {
 
 type AdminRepository interface {
 	CreateAdmin(ctx context.Context, admin domain.Admin) (domain.Admin, error)
+
 	GetAdminByID(ctx context.Context, id uuid.UUID) (domain.Admin, error)
 	GetAdminByEmail(ctx context.Context, email string) (domain.Admin, error)
+	GetAdmins(ctx context.Context, adminType *domain.Role) ([]domain.Admin, error)
+
+	UpdateAdminType(ctx context.Context, id uuid.UUID, adminType domain.Role) error
+	PatchAdmin(ctx context.Context, id uuid.UUID, patchedAdmin domain.Admin) (domain.Admin, error)
 }
 
 func NewAdminServie(adminRepo AdminRepository, jwtProvider *tools_jwt.JwtProvider) *AdminService {
