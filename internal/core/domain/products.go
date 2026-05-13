@@ -32,7 +32,7 @@ type ProductBaseDetailed struct {
 
 type ProductDetails struct {
 	CategoryName        string  `json:"category_name"`
-	ProducerCompanyName *string `json:"producer_company_name"`
+	ProducerCompanyName *string `json:"producer_company_name,omitempty"`
 }
 
 func (p *ProductBase) GetBase() *ProductBase                { return p }

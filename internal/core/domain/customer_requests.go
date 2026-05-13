@@ -29,23 +29,24 @@ func IsCustomerRequestStatus(status CustomerRequestStatus) bool {
 }
 
 type CustomerRequest struct {
-	ID                  uuid.UUID
-	Version             int
-	DesiredDate         *time.Time
-	DesiredTime         *time.Time
-	ExtraComment        *string
-	Status              CustomerRequestStatus
-	CustomerPhoneNumber string
-	ProductID           *uuid.UUID
-	HandledAt           *time.Time
-	CreatedAt           time.Time
-	HandlerAdminID      *uuid.UUID
+	ID                  uuid.UUID             `json:"id"`
+	Version             int                   `json:"-"`
+	DesiredDate         *time.Time            `json:"desired_date,omitempty"`
+	DesiredTime         *time.Time            `json:"desired_time,omitempty"`
+	ExtraComment        *string               `json:"extra_comment,omitempty"`
+	Status              CustomerRequestStatus `json:"status"`
+	CustomerPhoneNumber string                `json:"customer_phone_number"`
+	ProductID           *uuid.UUID            `json:"product_id,omitempty"`
+	HandledAt           *time.Time            `json:"handled_at,omitempty"`
+	CreatedAt           time.Time             `json:"created_at"`
+	HandlerAdminID      *uuid.UUID            `json:"handler_admin_id,omitempty"`
 }
 
 type CustomerRequestDetailed struct {
 	CustomerRequest
-	Fullname      *string
-	ChosenProduct *ProductBaseDetailed
+	CustomerFullname *string              `json:"customer_fullname,omitempty"`
+	HandlerAdminName *string              `json:"handler_admin_id,omitempty"`
+	ChosenProduct    *ProductBaseDetailed `json:"chosen_product,omitempty"`
 }
 
 type CustomerRequestForList struct {
@@ -59,6 +60,12 @@ type CustomerRequestForList struct {
 	HandlerAdminID      *uuid.UUID            `json:"handler_admin_id,omitempty"`
 	HandlerAdminName    *string               `json:"handler_admin_name,omitempty"`
 	HandledAt           *time.Time            `json:"handled_at,omitempty"`
+}
+
+type CustomerRequestPatch struct {
+	DesiredDate  Nullable[time.Time] `json:"desired_date"`
+	DesiredTime  Nullable[time.Time] `json:"desired_time"`
+	ExtraComment Nullable[string]    `json:"extra_comment"`
 }
 
 func NewCustomerRequest(
@@ -146,4 +153,95 @@ func (c *CustomerRequest) ValidateStatus() error {
 		}
 	}
 	return nil
+}
+
+// Validate проверяет корректность патча для заявки клиента
+func (p *CustomerRequestPatch) Validate() error {
+	if p.DesiredDate.Set && p.DesiredDate.Value == nil {
+		return fmt.Errorf("desired_date can't be patched to NULL: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if p.DesiredTime.Set && p.DesiredTime.Value == nil {
+		return fmt.Errorf("desired_time can't be patched to NULL: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if p.ExtraComment.Set && p.ExtraComment.Value == nil {
+		return fmt.Errorf("extra_comment can't be patched to NULL: %w", core_errors.ErrInvalidArgument)
+	}
+
+	if p.DesiredDate.Set && p.DesiredDate.Value != nil {
+		if (*p.DesiredDate.Value).IsZero() {
+			return fmt.Errorf("desired_date cannot be zero if provided: %w", core_errors.ErrInvalidArgument)
+		}
+	}
+
+	if p.DesiredTime.Set && p.DesiredTime.Value != nil {
+		if (*p.DesiredTime.Value).IsZero() {
+			return fmt.Errorf("desired_time cannot be zero if provided: %w", core_errors.ErrInvalidArgument)
+		}
+	}
+
+	if p.DesiredDate.Set && p.DesiredDate.Value != nil && p.DesiredTime.Set && p.DesiredTime.Value != nil {
+		desiredDateTime := time.Date(
+			(*p.DesiredDate.Value).Year(),
+			(*p.DesiredDate.Value).Month(),
+			(*p.DesiredDate.Value).Day(),
+			(*p.DesiredTime.Value).Hour(),
+			(*p.DesiredTime.Value).Minute(),
+			(*p.DesiredTime.Value).Second(),
+			(*p.DesiredTime.Value).Nanosecond(),
+			(*p.DesiredTime.Value).Location(),
+		)
+
+		if desiredDateTime.Before(time.Now()) {
+			return fmt.Errorf("desired datetime cannot be in the past: %w", core_errors.ErrInvalidArgument)
+		}
+	}
+
+	return nil
+}
+
+// ApplyPatch применяет патч к заявке клиента
+func (c *CustomerRequest) ApplyPatch(patch CustomerRequestPatch) error {
+	if err := patch.Validate(); err != nil {
+		return fmt.Errorf("invalid customer request patch: %w", err)
+	}
+
+	// Создаем копию для проверки
+	tmp := *c
+
+	if patch.DesiredDate.Set {
+		tmp.DesiredDate = patch.DesiredDate.Value
+	}
+
+	if patch.DesiredTime.Set {
+		tmp.DesiredTime = patch.DesiredTime.Value
+	}
+
+	if patch.ExtraComment.Set {
+		tmp.ExtraComment = patch.ExtraComment.Value
+	}
+
+	// Валидируем полученный объект
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("invalid patched customer request: %w", err)
+	}
+
+	// Применяем изменения
+	*c = tmp
+
+	return nil
+}
+
+// NewCustomerRequestPatch создает новый патч для заявки клиента
+func NewCustomerRequestPatch(
+	desiredDate Nullable[time.Time],
+	desiredTime Nullable[time.Time],
+	extraComment Nullable[string],
+) CustomerRequestPatch {
+	return CustomerRequestPatch{
+		DesiredDate:  desiredDate,
+		DesiredTime:  desiredTime,
+		ExtraComment: extraComment,
+	}
 }

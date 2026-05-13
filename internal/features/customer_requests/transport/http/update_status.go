@@ -7,6 +7,7 @@ import (
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
 	core_http_request "github.com/nikitavaulin/kudesnik/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
+	"go.uber.org/zap"
 )
 
 type UpdateReqStatusDTO struct {
@@ -43,6 +44,13 @@ func (h *CustomerRequestsTransportHTTP) UpdateCustomerRequestStatus(rw http.Resp
 		responseHandler.ErrorResponse(err, "failed to update customer request status")
 		return
 	}
+
+	log.Debug(
+		"Admin has changed customer request status",
+		zap.String("Admin", adminID.String()),
+		zap.String("CustomerRequest", requestID.String()),
+		zap.String("New status", string(dto.Status)),
+	)
 
 	responseHandler.NoContentResponse()
 }

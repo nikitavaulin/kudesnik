@@ -25,6 +25,7 @@ type CustomerRequestsService interface {
 	) ([]domain.CustomerRequestForList, error)
 
 	UpdateCustomerRequestStatus(ctx context.Context, reqID, adminID uuid.UUID, status domain.CustomerRequestStatus) error
+	PatchCustomerRequest(ctx context.Context, requestID uuid.UUID, patch domain.CustomerRequestPatch) error
 	DeleteCustomerRequest(ctx context.Context, requestID uuid.UUID) error
 }
 
@@ -42,24 +43,39 @@ func (h *CustomerRequestsTransportHTTP) Routes() []core_http_server.Route {
 			Handler: h.CreateCustomerRequest,
 		},
 		{
-			Method:  http.MethodGet,
-			Path:    "/requests/{id}",
-			Handler: h.GetCustomerRequest,
+			Method:       http.MethodGet,
+			Path:         "/requests/{id}",
+			Handler:      h.GetCustomerRequest,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
-			Method:  http.MethodGet,
-			Path:    "/requests",
-			Handler: h.GetCustomerRequests,
+			Method:       http.MethodGet,
+			Path:         "/requests",
+			Handler:      h.GetCustomerRequests,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/requests/status/{id}",
-			Handler: h.UpdateCustomerRequestStatus,
+			Method:       http.MethodPatch,
+			Path:         "/requests/status/{id}",
+			Handler:      h.UpdateCustomerRequestStatus,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
-			Method:  http.MethodDelete,
-			Path:    "/requests/{id}",
-			Handler: h.DeleteCustomerRequest,
+			Method:       http.MethodPatch,
+			Path:         "/requests/{id}",
+			Handler:      h.PatchCustomerRequest,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
+		},
+		{
+			Method:       http.MethodDelete,
+			Path:         "/requests/{id}",
+			Handler:      h.DeleteCustomerRequest,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 	}
 }

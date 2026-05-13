@@ -21,12 +21,11 @@ func (h *CustomerRequestsTransportHTTP) GetCustomerRequest(rw http.ResponseWrite
 		return
 	}
 
-	customerReq, err := h.requestsService.GetCustomerRequest(ctx, id)
+	customerRequest, err := h.requestsService.GetCustomerRequest(ctx, id)
 	if err != nil {
-		responseHandler.ErrorResponse(err, "failed to customer request")
+		responseHandler.ErrorResponse(err, "failed to get customer request")
 		return
 	}
 
-	responseDTO := ToCustomerRequestDetailedDTO(customerReq)
-	responseHandler.JSONResponse(responseDTO, http.StatusOK)
+	responseHandler.JSONResponse(customerRequest, http.StatusOK)
 }

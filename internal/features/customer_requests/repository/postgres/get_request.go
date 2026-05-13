@@ -15,6 +15,7 @@ func (r *CustomerRequestsRepository) GetCustomerRequest(ctx context.Context, id 
 	query := `
         SELECT 
             cr.request_id,
+			cr.version,
             cr.desired_date,
             cr.desired_time,
             cr.extra_comment,
@@ -24,9 +25,11 @@ func (r *CustomerRequestsRepository) GetCustomerRequest(ctx context.Context, id 
             cr.handled_at,
             cr.created_at,
             cr.handler_admin_id,
-            c.customer_name
+            c.customer_name,
+            a.full_name as handler_admin_name
         FROM kudesnik.customer_requests cr
         LEFT JOIN kudesnik.customers c ON cr.customer_phone_number = c.customer_phone_number
+        LEFT JOIN kudesnik.admins a ON cr.handler_admin_id = a.admin_id
         WHERE cr.request_id = $1
     `
 
@@ -34,6 +37,7 @@ func (r *CustomerRequestsRepository) GetCustomerRequest(ctx context.Context, id 
 
 	err := r.pool.QueryRow(ctx, query, id).Scan(
 		&detailed.ID,
+		&detailed.Version,
 		&detailed.DesiredDate,
 		&detailed.DesiredTime,
 		&detailed.ExtraComment,
@@ -43,7 +47,8 @@ func (r *CustomerRequestsRepository) GetCustomerRequest(ctx context.Context, id 
 		&detailed.HandledAt,
 		&detailed.CreatedAt,
 		&detailed.HandlerAdminID,
-		&detailed.Fullname,
+		&detailed.CustomerFullname,
+		&detailed.HandlerAdminName,
 	)
 
 	if err != nil {

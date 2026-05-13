@@ -29,7 +29,7 @@ func ToCustomerRequestDetailedDTO(detailed domain.CustomerRequestDetailed) Custo
 	return CustomerRequestDetailedDTO{
 		CustomerRequestDTO: CustomerRequestDTO{
 			CustomerPhoneNumber: detailed.CustomerPhoneNumber,
-			CustomerFullname:    detailed.Fullname,
+			CustomerFullname:    detailed.CustomerFullname,
 			DesiredDate:         detailed.DesiredDate,
 			DesiredTime:         detailed.DesiredTime,
 			ExtraComment:        detailed.ExtraComment,
