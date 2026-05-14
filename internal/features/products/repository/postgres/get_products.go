@@ -54,7 +54,7 @@ func (r *ProductsRepositoryPostgres) GetProducts(
 
 	if order != nil && *order != "" {
 		if *order == domain.DescendingOrder {
-			query += fmt.Sprintf(" ORDER BY p.price DESC", *order)
+			query += " ORDER BY p.price DESC"
 		} else {
 			query += " ORDER BY p.price ASC"
 		}
