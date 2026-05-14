@@ -35,9 +35,6 @@ func (h *ImagesTransportHTTPHandler) GetImage(rw http.ResponseWriter, r *http.Re
 	}
 	defer image.Content.Close()
 
-	log.Warn("LOGLOGLOG")
-
-	// Получаем *os.File (если ваш image.Content это *os.File)
 	if file, ok := image.Content.(*os.File); ok {
 		stat, _ := file.Stat()
 		http.ServeContent(rw, r, imgPath, stat.ModTime(), file)
@@ -47,12 +44,11 @@ func (h *ImagesTransportHTTPHandler) GetImage(rw http.ResponseWriter, r *http.Re
 	rw.Header().Set("Content-Type", image.MimeType)
 	rw.Header().Set("Content-Length", strconv.FormatInt(image.Size, 10))
 	// TODO: cache control
-	log.Debug("set headers", zap.String("type", image.MimeType), zap.String("size", fmt.Sprint(image.Size)))
+
 	if _, err := io.Copy(rw, image.Content); err != nil {
 		log.Error("failed to send image", zap.Error(err))
 		return
 	}
-	log.Debug("SUCCESSFULLY")
 }
 
 func getImagePathFromURL(r *http.Request) (string, error) {
