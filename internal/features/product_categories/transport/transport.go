@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_http_server "github.com/nikitavaulin/kudesnik/internal/core/transport/http/server"
 )
@@ -21,11 +20,11 @@ type ProductCategoryService interface {
 
 	GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error)
 
-	GetProductCategory(ctx context.Context, categoryID uuid.UUID) (domain.ProductCategory, error)
+	GetProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode) (domain.ProductCategory, error)
 
-	DeleteProductCategory(ctx context.Context, categoryID uuid.UUID) error
+	DeleteProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode) error
 
-	PatchProductCategory(ctx context.Context, categoryID uuid.UUID, patch domain.ProductCategoryPatch) (domain.ProductCategory, error)
+	PatchProductCategory(ctx context.Context, categoryCode domain.ProductCategoryCode, patch domain.ProductCategoryPatch) (domain.ProductCategory, error)
 }
 
 func NewProductCategoryHTTPHandler(categoriesService ProductCategoryService) *ProductCategoryHTTPHandler {
@@ -48,17 +47,17 @@ func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 		},
 		{
 			Method:  http.MethodGet,
-			Path:    "/product-categories/{id}",
+			Path:    "/product-categories/{category_code}",
 			Handler: h.GetProductCategory,
 		},
 		{
 			Method:  http.MethodDelete,
-			Path:    "/product-categories/{id}",
+			Path:    "/product-categories/{category_code}",
 			Handler: h.DeleteProductCategory,
 		},
 		{
 			Method:  http.MethodPatch,
-			Path:    "/product-categories/{id}",
+			Path:    "/product-categories/{category_code}",
 			Handler: h.PatchProductCategory,
 		},
 	}

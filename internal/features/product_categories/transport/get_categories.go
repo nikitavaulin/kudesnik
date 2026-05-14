@@ -1,7 +1,6 @@
 package product_categories_transport_http
 
 import (
-	"fmt"
 	"net/http"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
@@ -18,7 +17,7 @@ func (h *ProductCategoryHTTPHandler) GetCategories(rw http.ResponseWriter, r *ht
 
 	log.Debug("invoke get product categories handler")
 
-	limit, offset, err := getLimitOffsetParams(r)
+	limit, offset, err := core_http_request.GetLimitOffsetParams(r)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get limit/offset params")
 		return
@@ -32,18 +31,4 @@ func (h *ProductCategoryHTTPHandler) GetCategories(rw http.ResponseWriter, r *ht
 
 	categoriesDTO := dtosFromDomains(categories)
 	responseHandler.JSONResponse(categoriesDTO, http.StatusOK)
-}
-
-func getLimitOffsetParams(r *http.Request) (*int, *int, error) {
-	limit, err := core_http_request.GetIntQueryParam(r, "limit")
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get limit query param: %w", err)
-	}
-
-	offset, err := core_http_request.GetIntQueryParam(r, "offset")
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get offset query param: %w", err)
-	}
-
-	return limit, offset, nil
 }

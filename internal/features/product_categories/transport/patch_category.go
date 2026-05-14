@@ -46,9 +46,9 @@ func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter
 
 	log.Debug("invoke patch product category handler")
 
-	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
+	categoryCode, err := core_http_request.GetCategoryCodeFromPath(r)
 	if err != nil {
-		responseHandler.ErrorResponse(err, "failed to get categoryID")
+		responseHandler.ErrorResponse(err, "failed to get category_code")
 		return
 	}
 
@@ -61,7 +61,7 @@ func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter
 
 	patch := patchDomainFromDTO(categoryPatchDTO)
 
-	patchedCategory, err := h.categoriesService.PatchProductCategory(ctx, categoryID, patch)
+	patchedCategory, err := h.categoriesService.PatchProductCategory(ctx, categoryCode, patch)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to patch product category")
 		return

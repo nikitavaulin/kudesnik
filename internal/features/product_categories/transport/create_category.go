@@ -10,6 +10,7 @@ import (
 )
 
 type CreateCategoryRequest struct {
+	CategoryCode      string  `json:"category_code"`
 	CategoryName      string  `json:"category_name" validate:"required,min=3,max=60"`
 	InstallationPrice float64 `json:"installation_price"`
 }
@@ -43,5 +44,5 @@ func (h *ProductCategoryHTTPHandler) CreateCategory(rw http.ResponseWriter, r *h
 }
 
 func domainFromDTO(dto CreateCategoryRequest) domain.ProductCategory {
-	return *domain.NewProductCategoryUninitialized(dto.CategoryName, dto.InstallationPrice)
+	return *domain.NewProductCategory(dto.CategoryCode, dto.CategoryName, dto.InstallationPrice)
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
+	tools_jwt "github.com/nikitavaulin/kudesnik/internal/core/tools/jwt"
 	core_http_middleware "github.com/nikitavaulin/kudesnik/internal/core/transport/http/middleware"
 	"go.uber.org/zap"
 )
@@ -16,11 +17,15 @@ type HTTPServer struct {
 	config      *HTTPServerConfig
 	log         *core_logger.Logger
 	middlewares []core_http_middleware.Middleware
+	jwtProvider *tools_jwt.JwtProvider
+	// staticDirPath string
+	// staticURL     string
 }
 
 func NewHTTPServer(
 	config *HTTPServerConfig,
 	log *core_logger.Logger,
+	jwtProvider *tools_jwt.JwtProvider,
 	middlewares ...core_http_middleware.Middleware,
 ) *HTTPServer {
 	return &HTTPServer{
@@ -28,6 +33,8 @@ func NewHTTPServer(
 		config:      config,
 		log:         log,
 		middlewares: middlewares,
+		jwtProvider: jwtProvider,
+		// staticURL:   config.StaticURL,
 	}
 }
 
@@ -38,6 +45,13 @@ func (s *HTTPServer) RegisterAPIRouters(routers ...*APIVersionRouter) {
 			prefix+"/",
 			http.StripPrefix(prefix, router.WithMiddleware()),
 		)
+	}
+}
+
+func (s *HTTPServer) RegisterRoutes(routes ...Route) {
+	for _, route := range routes {
+		pattern := fmt.Sprintf("%s %s", route.Method, route.Path)
+		s.mux.Handle(pattern, route.WithMiddleware(s.jwtProvider))
 	}
 }
 

@@ -34,3 +34,10 @@ func DecodeAndValidateRequest(request *http.Request, dest any) error {
 
 	return nil
 }
+
+func DecodeRequest(request *http.Request, dest any) error {
+	if err := json.NewDecoder(request.Body).Decode(&dest); err != nil {
+		return fmt.Errorf("decode json: %v: %w", err, core_errors.ErrInvalidArgument)
+	}
+	return nil
+}

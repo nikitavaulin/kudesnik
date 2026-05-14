@@ -4,25 +4,24 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
 func (s *ProductCategoriesService) PatchProductCategory(
 	ctx context.Context,
-	categoryID uuid.UUID,
+	categoryCode domain.ProductCategoryCode,
 	patch domain.ProductCategoryPatch,
 ) (domain.ProductCategory, error) {
-	category, err := s.GetProductCategory(ctx, categoryID)
+	category, err := s.GetProductCategory(ctx, categoryCode)
 	if err != nil {
-		return domain.ProductCategory{}, fmt.Errorf("failed to get category by ID: %w", err)
+		return domain.ProductCategory{}, fmt.Errorf("failed to get category: %w", err)
 	}
 
 	if err := category.ApplyPatch(patch); err != nil {
 		return domain.ProductCategory{}, fmt.Errorf("failed to apply category patch: %w", err)
 	}
 
-	patchedCategory, err := s.categoriesRepository.PatchProductCategory(ctx, categoryID, category)
+	patchedCategory, err := s.categoriesRepository.PatchProductCategory(ctx, categoryCode, category)
 	if err != nil {
 		return domain.ProductCategory{}, fmt.Errorf("failed to patch category: %w", err)
 	}

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 	core_postgres_pool "github.com/nikitavaulin/kudesnik/internal/core/repository/postgres/pool"
@@ -13,7 +12,7 @@ import (
 
 func (r *ProductCategoriesRepository) PatchProductCategory(
 	ctx context.Context,
-	categoryID uuid.UUID,
+	categoryCode domain.ProductCategoryCode,
 	category domain.ProductCategory,
 ) (domain.ProductCategory, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
@@ -24,9 +23,9 @@ func (r *ProductCategoriesRepository) PatchProductCategory(
 		SET
 			product_category_name = $1,
 			installation_price = $2
-		WHERE product_category_id = $3
+		WHERE product_category_code = $3
 		RETURNING
-			product_category_id,
+			product_category_code,
 			product_category_name,
 			installation_price;
 	`
@@ -34,28 +33,28 @@ func (r *ProductCategoriesRepository) PatchProductCategory(
 	row := r.pool.QueryRow(
 		ctx, query,
 		category.CategoryName, category.InstallationPrice,
-		categoryID,
+		categoryCode,
 	)
 
 	var categoryModel ProductCategoriesModel
 
 	err := row.Scan(
-		&categoryModel.ID,
+		&categoryModel.Code,
 		&categoryModel.CategoryName,
 		&categoryModel.InstallationPrice,
 	)
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
 			return domain.ProductCategory{}, fmt.Errorf(
-				"category with ID=%v: %v: %w",
-				categoryID,
+				"category with code=%v: %v: %w",
+				categoryCode,
 				err,
 				core_errors.ErrNotFound,
 			)
 		}
 		return domain.ProductCategory{}, fmt.Errorf(
 			"scan category error: %v: %v",
-			categoryID,
+			categoryCode,
 			err,
 		)
 	}

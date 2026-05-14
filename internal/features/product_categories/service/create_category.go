@@ -17,6 +17,5 @@ func (s *ProductCategoriesService) CreateProductCategory(ctx context.Context, ca
 		return domain.ProductCategory{}, fmt.Errorf("create product category: %w", err)
 	}
 
-	return category, nil // with init id
-
+	return category, nil
 }

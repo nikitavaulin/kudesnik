@@ -17,13 +17,13 @@ func (h *ProductCategoryHTTPHandler) GetProductCategory(rw http.ResponseWriter, 
 
 	log.Debug("invoke get product category handler")
 
-	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
+	categoryCode, err := core_http_request.GetCategoryCodeFromPath(r)
 	if err != nil {
-		responseHandler.ErrorResponse(err, "failed to get categoryID")
+		responseHandler.ErrorResponse(err, "failed to get category_code")
 		return
 	}
 
-	category, err := h.categoriesService.GetProductCategory(ctx, categoryID)
+	category, err := h.categoriesService.GetProductCategory(ctx, categoryCode)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get category by ID")
 		return

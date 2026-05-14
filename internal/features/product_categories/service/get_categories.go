@@ -6,19 +6,14 @@ import (
 
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
+	core_validation "github.com/nikitavaulin/kudesnik/internal/core/tools/validation"
 )
 
 func (s *ProductCategoriesService) GetProductCategories(ctx context.Context, limit, offset *int) ([]domain.ProductCategory, error) {
-	if limit != nil && *limit < 0 {
+	if err := core_validation.ValidateLimitOffset(limit, offset); err != nil {
 		return nil, fmt.Errorf(
-			"limit must be non-negative: %w",
-			core_errors.ErrInvalidArgument,
-		)
-	}
-
-	if offset != nil && *offset < 0 {
-		return nil, fmt.Errorf(
-			"offset must be non-negative: %w",
+			"wrong limit/offset: %v, %w",
+			err,
 			core_errors.ErrInvalidArgument,
 		)
 	}
@@ -27,5 +22,6 @@ func (s *ProductCategoriesService) GetProductCategories(ctx context.Context, lim
 	if err != nil {
 		return []domain.ProductCategory{}, fmt.Errorf("failed to get categories from repo: %w", err)
 	}
+
 	return categories, nil
 }
