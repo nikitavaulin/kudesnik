@@ -35,6 +35,6 @@ func (h *ProductsHTTPHandler) GetProducts(rw http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	categoriesDTO := GetProductsResponseDTO(productsDtoFromDomain(products...))
-	responseHandler.JSONResponse(categoriesDTO, http.StatusOK)
+	// categoriesDTO := GetProductsResponseDTO(productsDtoFromDomain(products...))
+	responseHandler.JSONResponse(products, http.StatusOK)
 }

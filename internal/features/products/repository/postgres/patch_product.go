@@ -28,8 +28,10 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 			is_visible = $5,
 			category_code = $6,
 			producer_id = $7,
+			image_url = $8,
+			thumbnail_url = $9,
 			version = version + 1
-		WHERE product_id = $1 AND version = $8
+		WHERE product_id = $1 AND version = $10
 		RETURNING 
 			product_id,
 			version,
@@ -38,7 +40,9 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 			description,
 			is_visible,
 			category_code,
-			producer_id;
+			producer_id,
+			image_url,
+			thumbnail_url;
 	`
 
 	row := r.pool.QueryRow(
@@ -46,20 +50,23 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 		id,
 		product.ProductName, product.Price, product.Description,
 		product.IsVisible, product.CategoryCode, product.ProducerID,
+		product.ImageURL, product.ThumbnailURL,
 		product.Version,
 	)
 
-	var productModel ProductModel
+	var patchedProduct domain.ProductBase
 
 	err := row.Scan(
-		&productModel.ID,
-		&productModel.Version,
-		&productModel.ProductName,
-		&productModel.Price,
-		&productModel.Description,
-		&productModel.IsVisible,
-		&productModel.CategoryCode,
-		&productModel.ProducerID,
+		&patchedProduct.ID,
+		&patchedProduct.Version,
+		&patchedProduct.ProductName,
+		&patchedProduct.Price,
+		&patchedProduct.Description,
+		&patchedProduct.IsVisible,
+		&patchedProduct.CategoryCode,
+		&patchedProduct.ProducerID,
+		&patchedProduct.ImageURL,
+		&patchedProduct.ThumbnailURL,
 	)
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
@@ -73,7 +80,6 @@ func (r *ProductsRepositoryPostgres) PatchProduct(
 		return domain.ProductBase{}, fmt.Errorf("scan product error: %v", err)
 	}
 
-	patchedProduct := productDomainFromModel(productModel)
 	return patchedProduct, nil
 }
 
@@ -104,7 +110,9 @@ func (r *ProductsRepositoryPostgres) updateProductBaseInTx(
 			description,
 			is_visible,
 			category_code,
-			producer_id;
+			producer_id,
+			image_url,
+			thumbnail_url;
 	`
 
 	var updatedProduct domain.ProductBase
@@ -127,6 +135,8 @@ func (r *ProductsRepositoryPostgres) updateProductBaseInTx(
 		&updatedProduct.IsVisible,
 		&updatedProduct.CategoryCode,
 		&updatedProduct.ProducerID,
+		&updatedProduct.ImageURL,
+		&updatedProduct.ThumbnailURL,
 	)
 
 	if err != nil {

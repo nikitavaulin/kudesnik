@@ -22,6 +22,8 @@ type ProductBase struct {
 	IsVisible    bool       `json:"is_visible"`
 	CategoryCode string     `json:"category_code"`
 	ProducerID   *uuid.UUID `json:"producer_id,omitempty"`
+	ImageURL     *string    `json:"image_url,omitempty"`
+	ThumbnailURL *string    `json:"thumbnail_url,omitempty"`
 }
 
 type ProductBaseDetailed struct {
@@ -47,6 +49,8 @@ func NewProduct(
 	isVisible bool,
 	categoryCode string,
 	producerID *uuid.UUID,
+	imageURL *string,
+	thumbnailURL *string,
 ) *ProductBase {
 	return &ProductBase{
 		ID:           id,
@@ -57,6 +61,8 @@ func NewProduct(
 		IsVisible:    isVisible,
 		CategoryCode: categoryCode,
 		ProducerID:   producerID,
+		ImageURL:     imageURL,
+		ThumbnailURL: thumbnailURL,
 	}
 }
 
@@ -72,6 +78,7 @@ func NewProductUninitialized(
 		name, price, description,
 		false,
 		categoryCode, producerID,
+		nil, nil,
 	)
 }
 
@@ -102,6 +109,8 @@ type ProductBasePatch struct {
 	IsVisible    Nullable[bool]      `json:"is_visible"`
 	CategoryCode Nullable[string]    `json:"category_code"`
 	ProducerID   Nullable[uuid.UUID] `json:"producer_id"`
+	ImageURL     Nullable[string]    `json:"image_url"`
+	ThumbnailURL Nullable[string]    `json:"thumbnail_url"`
 }
 
 func NewProductPatch(
@@ -175,6 +184,14 @@ func (p *ProductBase) ApplyPatch(basePatch *ProductBasePatch) error {
 
 	if basePatch.ProducerID.Set {
 		tmp.ProducerID = basePatch.ProducerID.Value
+	}
+
+	if basePatch.ImageURL.Set {
+		tmp.ImageURL = basePatch.ImageURL.Value
+	}
+
+	if basePatch.ThumbnailURL.Set {
+		tmp.ThumbnailURL = basePatch.ThumbnailURL.Value
 	}
 
 	if err := tmp.Validate(); err != nil {

@@ -21,6 +21,7 @@ func productDomainFromModel(m ProductModel) domain.ProductBase {
 		m.ID, m.Version,
 		m.ProductName, m.Price, m.Description,
 		m.IsVisible, m.CategoryCode, m.ProducerID,
+		nil, nil,
 	)
 }
 

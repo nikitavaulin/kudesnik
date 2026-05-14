@@ -15,13 +15,13 @@ func (h *ProductsHTTPHandler) DeleteProduct(rw http.ResponseWriter, r *http.Requ
 
 	log.Debug("invoke delete product handler")
 
-	categoryID, err := core_http_request.GetUUIDFromPath(r, "id")
+	productID, err := core_http_request.GetUUIDFromPath(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get productID")
 		return
 	}
 
-	if err := h.productsService.DeleteProduct(ctx, categoryID); err != nil {
+	if err := h.productsService.DeleteProduct(ctx, productID); err != nil {
 		responseHandler.ErrorResponse(err, "failed to delete product")
 		return
 	}

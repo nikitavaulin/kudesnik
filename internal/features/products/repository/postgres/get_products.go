@@ -37,25 +37,25 @@ func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID
 	}
 	defer rows.Close()
 
-	var productsModels []ProductModel
+	var products []domain.ProductBase
 	for rows.Next() {
-		var productModel ProductModel
+		var product domain.ProductBase
 
 		err := rows.Scan(
-			&productModel.ID, &productModel.Version,
-			&productModel.ProductName, &productModel.Price, &productModel.Description,
-			&productModel.IsVisible, &productModel.CategoryCode, &productModel.ProducerID,
+			&product.ID, &product.Version,
+			&product.ProductName, &product.Price, &product.Description,
+			&product.IsVisible, &product.CategoryCode, &product.ProducerID,
+			&product.ImageURL, &product.ThumbnailURL,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("GetProducts from repo: %v: %w", err, core_errors.ErrNotFound)
 		}
 
-		productsModels = append(productsModels, productModel)
+		products = append(products, product)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("next rows: %w", err)
 	}
 
-	products := productsDomainFromModels(productsModels...)
 	return products, nil
 }

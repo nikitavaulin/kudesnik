@@ -22,12 +22,13 @@ func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUI
 
 	row := r.pool.QueryRow(ctx, query, id)
 
-	var productModel ProductModel
+	var product domain.ProductBase
 
 	err := row.Scan(
-		&productModel.ID, &productModel.Version,
-		&productModel.ProductName, &productModel.Price, &productModel.Description,
-		&productModel.IsVisible, &productModel.CategoryCode, &productModel.ProducerID,
+		&product.ID, &product.Version,
+		&product.ProductName, &product.Price, &product.Description,
+		&product.IsVisible, &product.CategoryCode, &product.ProducerID,
+		&product.ImageURL, &product.ThumbnailURL,
 	)
 	if err != nil {
 		if errors.Is(err, core_postgres_pool.ErrNoRows) {
@@ -36,7 +37,6 @@ func (r *ProductsRepositoryPostgres) GetProduct(ctx context.Context, id uuid.UUI
 		return domain.ProductBase{}, fmt.Errorf("GetProduct from repo: %w", err)
 	}
 
-	product := productDomainFromModel(productModel)
 	return product, nil
 }
 

@@ -10,6 +10,7 @@ import (
 type HTTPServerConfig struct {
 	Address          string        `envconfig:"ADDRESS" required:"true"`
 	ShutdownDuration time.Duration `envconfig:"SHUTDOWN_DURATION" default:"30s"`
+	StaticURL        string        `envconfig:"STATIC_DIR" default:"/static"`
 }
 
 func NewHTTPServerConfig() (*HTTPServerConfig, error) {

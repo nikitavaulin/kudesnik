@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	core_logger "github.com/nikitavaulin/kudesnik/internal/core/logger"
@@ -18,6 +19,9 @@ import (
 	customer_requests_repository_postgres "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/repository/postgres"
 	customer_requests_service "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/service"
 	customer_requests_transport_http "github.com/nikitavaulin/kudesnik/internal/features/customer_requests/transport/http"
+	image_local_storage "github.com/nikitavaulin/kudesnik/internal/features/images/repository/local"
+	images_service "github.com/nikitavaulin/kudesnik/internal/features/images/service"
+	images_transport_http "github.com/nikitavaulin/kudesnik/internal/features/images/transport/http"
 	product_categories_repository "github.com/nikitavaulin/kudesnik/internal/features/product_categories/repository"
 	product_categories_service "github.com/nikitavaulin/kudesnik/internal/features/product_categories/service"
 	product_categories_transport_http "github.com/nikitavaulin/kudesnik/internal/features/product_categories/transport"
@@ -46,11 +50,26 @@ func main() {
 	}
 	defer pool.Close()
 
+	projectRoot, err := getProjectRoot()
+	if err != nil {
+		logger.Fatal("failed to get project root", zap.Error(err))
+	}
+
+	uploadsPath := getUploadsPath()
+	absUploadPath := filepath.Join(projectRoot, uploadsPath)
+
+	if err := os.MkdirAll(absUploadPath, 0755); err != nil {
+		logger.Fatal("failed to create uploads directory", zap.Error(err))
+	}
+
 	jwtProvider := tools_jwt.NewJWTProvider(tools_jwt.NewConfigMust())
 
 	logger.Debug("Starting Kudesnik application!")
-
 	logger.Debug("initializing features")
+
+	localStorage := image_local_storage.NewLocalStorage(image_local_storage.NewLocalStorageConfig(projectRoot, "/static", uploadsPath))
+	imageServie := images_service.NewImageService(localStorage)
+	imageTransport := images_transport_http.NewImageTransportHTTPHandler(imageServie)
 
 	productsCategoriesRepo := product_categories_repository.NewProductCategoriesRepository(pool)
 	productsCategoriesService := product_categories_service.NewProductCategoriesService(productsCategoriesRepo)
@@ -58,7 +77,7 @@ func main() {
 
 	productsRepo := products_repository_postges.NewProductsRepositoryPostgres(pool)
 	productsSevice := products_service.NewProductsService(productsRepo)
-	productsTransport := products_transport_http.NewProductsHTTPHandler(productsSevice)
+	productsTransport := products_transport_http.NewProductsHTTPHandler(productsSevice, imageServie)
 
 	adminsRepo := admin_repository_postgres.NewAdminRepositoryPostgres(pool)
 	adminsService := admin_service.NewAdminServie(adminsRepo, jwtProvider)
@@ -78,15 +97,29 @@ func main() {
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfigMust(),
 		logger,
+		jwtProvider,
 		core_http_middleware.RequestID(),
 		core_http_middleware.Logger(logger),
 		core_http_middleware.Trace(),
 		core_http_middleware.Panic(),
 	)
 	httpServer.RegisterAPIRouters(apiVersionRouter)
+	httpServer.RegisterRoutes(imageTransport.Routes()...)
 
 	if err := httpServer.Run(ctx); err != nil {
 		logger.Error("HTTP server run error", zap.Error(err))
 	}
 
+}
+
+func getProjectRoot() (string, error) {
+	root := os.Getenv("PROJECT_ROOT")
+	if root == "" {
+		return "", fmt.Errorf("failed to get env var PROJECT_ROOT")
+	}
+	return root, nil
+}
+
+func getUploadsPath() string {
+	return filepath.Join("uploads", "products")
 }

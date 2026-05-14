@@ -39,3 +39,11 @@ func (s *ProductsService) getProduct(ctx context.Context, id uuid.UUID, category
 		return &product, err
 	}
 }
+
+func (s *ProductsService) GetProductBase(ctx context.Context, id uuid.UUID) (domain.ProductBase, error) {
+	product, err := s.productRepo.GetProduct(ctx, id)
+	if err != nil {
+		return domain.ProductBase{}, fmt.Errorf("failed to get product base from repo: %w", err)
+	}
+	return product, nil
+}
