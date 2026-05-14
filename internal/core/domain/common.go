@@ -10,6 +10,9 @@ import (
 const (
 	MinFullNameLength = 1
 	MaxFullNameLength = 60
+
+	AscendingOrder  string = "asc"
+	DescendingOrder string = "desc"
 )
 
 func ValidateFullName(fullname string) error {

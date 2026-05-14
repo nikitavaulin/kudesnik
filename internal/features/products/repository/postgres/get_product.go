@@ -46,22 +46,33 @@ func (r *ProductsRepositoryPostgres) GetProductDetailed(ctx context.Context, id 
 
 	query := `
 		SELECT 
-			p.product_name as product_name,
+			p.product_id,
+			p.version,
+			p.product_name,
 			p.price,
-			c.product_category_name as category_name,
-			pc.company_name as producer_company_name
+			p.description,
+			p.is_visible,
+			p.category_code,
+			p.producer_id,
+			p.image_url,
+			p.thumbnail_url,
+			pc.product_category_name,
+			pc.installation_price,
+			pr.company_name
 		FROM kudesnik.products p
-		LEFT JOIN kudesnik.product_categories c ON p.category_code = c.product_category_code
-		LEFT JOIN kudesnik.producers pc ON p.producer_id = pc.producer_id
+		LEFT JOIN kudesnik.product_categories pc ON p.category_code = pc.product_category_code
+		LEFT JOIN kudesnik.producers pr ON p.producer_id = pr.producer_id
 		WHERE p.product_id = $1
 	`
 
 	var product domain.ProductBaseDetailed
 
 	err := r.pool.QueryRow(ctx, query, id).Scan(
-		&product.ProductName,
-		&product.Price,
-		&product.CategoryName,
+		&product.ID, &product.Version,
+		&product.ProductName, &product.Price, &product.Description,
+		&product.IsVisible, &product.CategoryCode, &product.ProducerID,
+		&product.ImageURL, &product.ThumbnailURL,
+		&product.CategoryName, &product.InstallationPrice,
 		&product.ProducerCompanyName,
 	)
 
@@ -70,6 +81,38 @@ func (r *ProductsRepositoryPostgres) GetProductDetailed(ctx context.Context, id 
 			return domain.ProductBaseDetailed{}, fmt.Errorf("product with id %s not found: %w", id, core_errors.ErrNotFound)
 		}
 		return domain.ProductBaseDetailed{}, fmt.Errorf("failed to get product detailed: %w", err)
+	}
+
+	return product, nil
+}
+
+func (r *ProductsRepositoryPostgres) GetProductDetails(ctx context.Context, id uuid.UUID) (domain.ProductDetails, error) {
+	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
+	defer cancel()
+
+	query := `
+		SELECT 
+			pc.product_category_name,
+			pc.installation_price,
+			pr.company_name
+		FROM kudesnik.products p
+		LEFT JOIN kudesnik.product_categories pc ON p.category_code = pc.product_category_code
+		LEFT JOIN kudesnik.producers pr ON p.producer_id = pr.producer_id
+		WHERE p.product_id = $1
+	`
+
+	var product domain.ProductDetails
+
+	err := r.pool.QueryRow(ctx, query, id).Scan(
+		&product.CategoryName, &product.InstallationPrice,
+		&product.ProducerCompanyName,
+	)
+
+	if err != nil {
+		if err == core_postgres_pool.ErrNoRows {
+			return domain.ProductDetails{}, fmt.Errorf("product with id %s not found: %w", id, core_errors.ErrNotFound)
+		}
+		return domain.ProductDetails{}, fmt.Errorf("failed to get product details: %w", err)
 	}
 
 	return product, nil

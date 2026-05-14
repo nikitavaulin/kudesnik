@@ -8,12 +8,21 @@ import (
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 )
 
-func (s *ProductsService) GetProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryCode) (domain.Product, error) {
+func (s *ProductsService) GetProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryCode) (domain.ProductDetailed, error) {
 	product, err := s.getProduct(ctx, id, category)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get product from repository: %w", err)
+		return domain.ProductDetailed{}, fmt.Errorf("failed to get product from repository: %w", err)
 	}
-	return product, nil
+
+	details, err := s.productRepo.GetProductDetails(ctx, id)
+	if err != nil {
+		return domain.ProductDetailed{}, fmt.Errorf("failed to get product details from repository: %w", err)
+	}
+
+	return domain.ProductDetailed{
+		Product:        product,
+		ProductDetails: details,
+	}, nil
 }
 
 func (s *ProductsService) getProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryCode) (domain.Product, error) {

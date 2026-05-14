@@ -18,8 +18,8 @@ type ProductsHTTPHandler struct {
 type ProductsService interface {
 	CreateProduct(ctx context.Context, product domain.Product) (domain.Product, error)
 
-	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error)
-	GetProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryCode) (domain.Product, error)
+	GetProducts(ctx context.Context, category *domain.ProductCategoryCode, order *string, limit, offset *int) ([]domain.ProductBaseDetailed, error)
+	GetProduct(ctx context.Context, id uuid.UUID, category domain.ProductCategoryCode) (domain.ProductDetailed, error)
 	GetProductBase(ctx context.Context, id uuid.UUID) (domain.ProductBase, error)
 
 	DeleteProduct(ctx context.Context, id uuid.UUID) error

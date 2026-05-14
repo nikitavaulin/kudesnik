@@ -18,9 +18,10 @@ type ProductsRepository interface {
 	CreateInteriorDoor(ctx context.Context, door domain.InteriorDoor) (domain.InteriorDoor, error)
 	CreateBalcony(ctx context.Context, balcony domain.Balcony) (domain.Balcony, error)
 
-	GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error)
+	GetProducts(ctx context.Context, category *domain.ProductCategoryCode, order *string, limit, offset *int) ([]domain.ProductBaseDetailed, error)
 	GetProduct(ctx context.Context, id uuid.UUID) (domain.ProductBase, error)
 	GetProductDetailed(ctx context.Context, id uuid.UUID) (domain.ProductBaseDetailed, error)
+	GetProductDetails(ctx context.Context, id uuid.UUID) (domain.ProductDetails, error)
 	GetWindow(ctx context.Context, id uuid.UUID) (domain.Window, error)
 	GetEntranceDoor(ctx context.Context, id uuid.UUID) (domain.EntranceDoor, error)
 	GetInteriorDoor(ctx context.Context, id uuid.UUID) (domain.InteriorDoor, error)

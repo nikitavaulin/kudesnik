@@ -15,7 +15,7 @@ const (
 
 type ProductBase struct {
 	ID           uuid.UUID  `json:"id"`
-	Version      int        `json:"version"`
+	Version      int        `json:"-"`
 	ProductName  string     `json:"product_name"`
 	Price        float64    `json:"price"`
 	Description  *string    `json:"description"`
@@ -27,14 +27,8 @@ type ProductBase struct {
 }
 
 type ProductBaseDetailed struct {
-	ProductName string  `json:"product_name"`
-	Price       float64 `json:"price"`
+	ProductBase
 	ProductDetails
-}
-
-type ProductDetails struct {
-	CategoryName        string  `json:"category_name"`
-	ProducerCompanyName *string `json:"producer_company_name,omitempty"`
 }
 
 func (p *ProductBase) GetBase() *ProductBase                { return p }

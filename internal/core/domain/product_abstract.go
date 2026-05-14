@@ -11,6 +11,17 @@ type ProductPatch interface {
 	isProductPatch()
 }
 
+type ProductDetailed struct {
+	Product        `json:"product"`
+	ProductDetails `json:"details"`
+}
+
+type ProductDetails struct {
+	CategoryName        string  `json:"category_name"`
+	InstallationPrice   float64 `json:"installation_price"`
+	ProducerCompanyName *string `json:"producer_company_name,omitempty"`
+}
+
 func GetProductEmptyInstance(categoryCode string) Product {
 	category := GetCategoryCode(categoryCode)
 	switch category {

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
+	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 )
 
@@ -70,4 +71,15 @@ func GetStringParamOrNil(r *http.Request, key string) *string {
 		return nil
 	}
 	return &value
+}
+
+func GetOrderQueryParam(r *http.Request) (*string, error) {
+	value := GetStringQueryParam(r, "order")
+	if value == "" {
+		return nil, nil
+	}
+	if value == domain.AscendingOrder || value == domain.DescendingOrder {
+		return &value, nil
+	}
+	return nil, fmt.Errorf("unknown order: %w", core_errors.ErrInvalidArgument)
 }

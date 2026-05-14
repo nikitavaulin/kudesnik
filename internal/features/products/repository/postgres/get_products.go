@@ -3,32 +3,79 @@ package products_repository_postges
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	"github.com/google/uuid"
 	"github.com/nikitavaulin/kudesnik/internal/core/domain"
 	core_errors "github.com/nikitavaulin/kudesnik/internal/core/errors"
 )
 
-func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID *uuid.UUID, limit, offset *int) ([]domain.ProductBase, error) {
+func (r *ProductsRepositoryPostgres) GetProducts(
+	ctx context.Context,
+	category *domain.ProductCategoryCode,
+	order *string,
+	limit, offset *int,
+) ([]domain.ProductBaseDetailed, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OperationTime())
 	defer cancel()
 
-	var query string
-	var args []any
+	query := `
+		SELECT 
+			p.product_id,
+			p.version,
+			p.product_name,
+			p.price,
+			p.description,
+			p.is_visible,
+			p.category_code,
+			p.producer_id,
+			p.image_url,
+			p.thumbnail_url,
+			pc.product_category_name,
+			pc.installation_price,
+			pr.company_name
+		FROM kudesnik.products p
+		LEFT JOIN kudesnik.product_categories pc ON p.category_code = pc.product_category_code
+		LEFT JOIN kudesnik.producers pr ON p.producer_id = pr.producer_id
+	`
 
-	if categoryID != nil {
-		query = `
-			SELECT * FROM kudesnik.products
-			WHERE category_id = $1
-			LIMIT $2 OFFSET $3;
-		`
-		args = []any{categoryID, limit, offset}
+	var args []any
+	argCounter := 1
+	conditions := []string{}
+
+	if category != nil && *category != "" {
+		conditions = append(conditions, fmt.Sprintf("p.category_code = $%d", argCounter))
+		args = append(args, *category)
+		argCounter++
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	if order != nil && *order != "" {
+		if *order == domain.DescendingOrder {
+			query += fmt.Sprintf(" ORDER BY p.price DESC", *order)
+		} else {
+			query += " ORDER BY p.price ASC"
+		}
 	} else {
-		query = `
-			SELECT * FROM kudesnik.products
-			LIMIT $1 OFFSET $2;
-		`
-		args = []any{limit, offset}
+		query += " ORDER BY p.price ASC"
+	}
+
+	if limit != nil && *limit > 0 {
+		query += fmt.Sprintf(" LIMIT $%d", argCounter)
+		args = append(args, *limit)
+		argCounter++
+	} else {
+		query += fmt.Sprintf(" LIMIT $%d", argCounter)
+		args = append(args, 100)
+		argCounter++
+	}
+
+	if offset != nil && *offset > 0 {
+		query += fmt.Sprintf(" OFFSET $%d", argCounter)
+		args = append(args, *offset)
+		argCounter++
 	}
 
 	rows, err := r.pool.Query(ctx, query, args...)
@@ -37,15 +84,17 @@ func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID
 	}
 	defer rows.Close()
 
-	var products []domain.ProductBase
+	var products []domain.ProductBaseDetailed
 	for rows.Next() {
-		var product domain.ProductBase
+		var product domain.ProductBaseDetailed
 
 		err := rows.Scan(
 			&product.ID, &product.Version,
 			&product.ProductName, &product.Price, &product.Description,
 			&product.IsVisible, &product.CategoryCode, &product.ProducerID,
 			&product.ImageURL, &product.ThumbnailURL,
+			&product.CategoryName, &product.InstallationPrice,
+			&product.ProducerCompanyName,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("GetProducts from repo: %v: %w", err, core_errors.ErrNotFound)
@@ -54,7 +103,7 @@ func (r *ProductsRepositoryPostgres) GetProducts(ctx context.Context, categoryID
 		products = append(products, product)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("next rows: %w", err)
+		return []domain.ProductBaseDetailed{}, fmt.Errorf("next rows: %w", err)
 	}
 
 	return products, nil
