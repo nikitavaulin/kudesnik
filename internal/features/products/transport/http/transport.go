@@ -45,9 +45,11 @@ func NewProductsHTTPHandler(productsService ProductsService, imageService ImageS
 func (h *ProductsHTTPHandler) Routes() []core_http_server.Route {
 	return []core_http_server.Route{
 		{
-			Method:  http.MethodPost,
-			Path:    "/products/{category_code}",
-			Handler: h.CreateProduct,
+			Method:       http.MethodPost,
+			Path:         "/products/{category_code}",
+			Handler:      h.CreateProduct,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
 			Method:  http.MethodGet,
@@ -60,14 +62,18 @@ func (h *ProductsHTTPHandler) Routes() []core_http_server.Route {
 			Handler: h.GetProduct,
 		},
 		{
-			Method:  http.MethodDelete,
-			Path:    "/products/{id}",
-			Handler: h.DeleteProduct,
+			Method:       http.MethodDelete,
+			Path:         "/products/{id}",
+			Handler:      h.DeleteProduct,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
-			Method:  http.MethodDelete,
-			Path:    "/products",
-			Handler: h.DeleteProducts,
+			Method:       http.MethodDelete,
+			Path:         "/products",
+			Handler:      h.DeleteProducts,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
 			Method:       http.MethodPatch,
@@ -77,14 +83,18 @@ func (h *ProductsHTTPHandler) Routes() []core_http_server.Route {
 			AllowedRoles: []domain.Role{domain.ManagerRole, domain.AdminRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/products/visibility",
-			Handler: h.UpdateProductsVisability,
+			Method:       http.MethodPatch,
+			Path:         "/products/visibility",
+			Handler:      h.UpdateProductsVisability,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/products/{category_code}/{id}",
-			Handler: h.PatchProduct,
+			Method:       http.MethodPatch,
+			Path:         "/products/{category_code}/{id}",
+			Handler:      h.PatchProduct,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
 			Method:       http.MethodPost,

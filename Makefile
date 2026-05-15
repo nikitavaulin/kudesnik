@@ -1,10 +1,10 @@
 include .env
 export
 
-export PROJECT_ROOT=$(shell pwd)
+export PROJECT_ROOT=$(CURDIR)
 
 env-up:
-	@docker compose up -d kudesnik-postgres port-forwarder
+	@docker compose up -d kudesnik-postgres
 
 env-down:
 	@docker compose down kudesnik-postgres
@@ -54,6 +54,16 @@ migrate-action:
 
 kudesnik-run:
 	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	export UPLOADS_FOLDER=uploads/products && \
 	export POSTGRES_HOST=localhost && \
 	go mod tidy && \
 	go run cmd/kudesnik/main.go
+
+kudesnik-deploy:
+	@docker compose up -d --build kudesnik
+
+kudesnik-undeploy:
+	@docker compose down kudesnik
+
+ps:
+	@docker compose ps

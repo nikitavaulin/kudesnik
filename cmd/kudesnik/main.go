@@ -55,11 +55,15 @@ func main() {
 		logger.Fatal("failed to get project root", zap.Error(err))
 	}
 
-	uploadsPath := getUploadsPath()
+	uploadsPath, err := getUploadsFolder()
+	if err != nil {
+		logger.Fatal("failed to get uploads path", zap.Error(err))
+	}
+
 	absUploadPath := filepath.Join(projectRoot, uploadsPath)
 
 	if err := os.MkdirAll(absUploadPath, 0755); err != nil {
-		logger.Fatal("failed to create uploads directory", zap.Error(err))
+		logger.Fatal("failed to create uploads directory", zap.Error(err), zap.String("upload path", absUploadPath))
 	}
 
 	jwtProvider := tools_jwt.NewJWTProvider(tools_jwt.NewConfigMust())
@@ -120,6 +124,10 @@ func getProjectRoot() (string, error) {
 	return root, nil
 }
 
-func getUploadsPath() string {
-	return filepath.Join("uploads", "products")
+func getUploadsFolder() (string, error) {
+	folderPath := os.Getenv("UPLOADS_FOLDER")
+	if folderPath == "" {
+		return "", fmt.Errorf("failed to get env var UPLOADS_FOLDER")
+	}
+	return "/" + folderPath, nil
 }
