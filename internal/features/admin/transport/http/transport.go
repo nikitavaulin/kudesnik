@@ -33,14 +33,18 @@ func NewAdminTrasnsportHTTPHandler(adminService AdminService) *AdminTrasnsportHT
 func (h *AdminTrasnsportHTTPHandler) Routes() []core_http_server.Route {
 	return []core_http_server.Route{
 		{
-			Method:  http.MethodPost,
-			Path:    "/admins",
-			Handler: h.CreateAdmin,
+			Method:       http.MethodPost,
+			Path:         "/admins",
+			Handler:      h.CreateAdmin,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 		{
-			Method:  http.MethodGet,
-			Path:    "/admins/{id}",
-			Handler: h.GetAdmin,
+			Method:       http.MethodGet,
+			Path:         "/admins/{id}",
+			Handler:      h.GetAdmin,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
 			Method:  http.MethodPost,
@@ -48,19 +52,25 @@ func (h *AdminTrasnsportHTTPHandler) Routes() []core_http_server.Route {
 			Handler: h.LoginAdmin,
 		},
 		{
-			Method:  http.MethodGet,
-			Path:    "/admins",
-			Handler: h.GetAdmins,
+			Method:       http.MethodGet,
+			Path:         "/admins",
+			Handler:      h.GetAdmins,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/admins/role/{id}",
-			Handler: h.UpdateAdminType,
+			Method:       http.MethodPatch,
+			Path:         "/admins/role/{id}",
+			Handler:      h.UpdateAdminType,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/admins/{id}",
-			Handler: h.PatchAdmin,
+			Method:       http.MethodPatch,
+			Path:         "/admins/{id}",
+			Handler:      h.PatchAdmin,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 	}
 }

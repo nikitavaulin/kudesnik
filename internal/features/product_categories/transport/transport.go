@@ -36,9 +36,11 @@ func NewProductCategoryHTTPHandler(categoriesService ProductCategoryService) *Pr
 func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 	return []core_http_server.Route{
 		{
-			Method:  http.MethodPost,
-			Path:    "/product-categories",
-			Handler: h.CreateCategory,
+			Method:       http.MethodPost,
+			Path:         "/product-categories",
+			Handler:      h.CreateCategory,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 		{
 			Method:  http.MethodGet,
@@ -51,14 +53,18 @@ func (h *ProductCategoryHTTPHandler) Routes() []core_http_server.Route {
 			Handler: h.GetProductCategory,
 		},
 		{
-			Method:  http.MethodDelete,
-			Path:    "/product-categories/{category_code}",
-			Handler: h.DeleteProductCategory,
+			Method:       http.MethodDelete,
+			Path:         "/product-categories/{category_code}",
+			Handler:      h.DeleteProductCategory,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole},
 		},
 		{
-			Method:  http.MethodPatch,
-			Path:    "/product-categories/{category_code}",
-			Handler: h.PatchProductCategory,
+			Method:       http.MethodPatch,
+			Path:         "/product-categories/{category_code}",
+			Handler:      h.PatchProductCategory,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 	}
 }
