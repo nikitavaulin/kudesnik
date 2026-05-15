@@ -62,5 +62,8 @@ kudesnik-run:
 kudesnik-deploy:
 	@docker compose up -d --build kudesnik
 
+kudesnik-undeploy:
+	@docker compose down kudesnik
+
 ps:
 	@docker compose ps
