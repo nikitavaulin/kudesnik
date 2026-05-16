@@ -16,6 +16,20 @@ type CreateAdminRequestDTO struct {
 	AdminType domain.Role `json:"admin_type"`
 }
 
+// CreateAdmin godoc
+// @Summary Создать админа
+// @Description Создать нового админа в системе
+// @Security BearerAuth
+// @Tags admins
+// @Accept json
+// @Produce json
+// @Param request body CreateAdminRequestDTO true "CreateAdmin тело запроса"
+// @Success 201 {object} AdminsRepsonseDTO "успешно созданный админ"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /admins [post]
 func (h *AdminTrasnsportHTTPHandler) CreateAdmin(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

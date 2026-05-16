@@ -13,6 +13,22 @@ type UpdateAdminTypeRequestDTO struct {
 	AdminType domain.Role `json:"admin_type"`
 }
 
+// PatchAdUpdateAdminType godoc
+// @Summary Изменить роль админа
+// @Description Изменить тип админа в системе, может только superadmin
+// @Security BearerAuth
+// @Tags admins
+// @Accept json
+// @Produce json
+// @Param id path string true "ID обновляемого админа" Format(uuid)
+// @Param request body UpdateAdminTypeRequestDTO true "PatchAdmin тело запроса"
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /admins/role/{id} [patch]
 func (h *AdminTrasnsportHTTPHandler) UpdateAdminType(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

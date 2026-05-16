@@ -83,41 +83,41 @@ func (d *InteriorDoor) Validate() error {
 }
 
 type DoorBasePatch struct {
-	Collection      Nullable[string] `json:"collection"`
-	Width           Nullable[int]    `json:"width"`
-	Height          Nullable[int]    `json:"height"`
-	OutsideMaterial Nullable[string] `json:"outside_material"`
-	OutsideColor    Nullable[string] `json:"outside_color"`
-	OutsidePicture  Nullable[string] `json:"outside_picture"`
-	InsideMaterial  Nullable[string] `json:"inside_material"`
-	InsideColor     Nullable[string] `json:"inside_color"`
-	InsidePicture   Nullable[string] `json:"inside_picture"`
+	Collection      Nullable[string] `json:"collection" swaggertype:"string"`
+	Width           Nullable[int]    `json:"width" swaggertype:"integer"`
+	Height          Nullable[int]    `json:"height" swaggertype:"integer"`
+	OutsideMaterial Nullable[string] `json:"outside_material" swaggertype:"string"`
+	OutsideColor    Nullable[string] `json:"outside_color" swaggertype:"string"`
+	OutsidePicture  Nullable[string] `json:"outside_picture" swaggertype:"string"`
+	InsideMaterial  Nullable[string] `json:"inside_material" swaggertype:"string"`
+	InsideColor     Nullable[string] `json:"inside_color" swaggertype:"string"`
+	InsidePicture   Nullable[string] `json:"inside_picture" swaggertype:"string"`
 }
 
 // Patch структура для EntranceDoor
 type EntranceDoorPatch struct {
 	ProductBasePatch
 	DoorBasePatch
-	StrengthClass         Nullable[string] `json:"strength_class"`
-	SoundInsulation       Nullable[string] `json:"sound_insulation"`
-	MetalThickness        Nullable[string] `json:"metal_thickness"`
-	BoxThickness          Nullable[string] `json:"box_thickness"`
-	LeafThickness         Nullable[string] `json:"leaf_thickness"`
-	LeafDescription       Nullable[string] `json:"leaf_description"`
-	FillingDescription    Nullable[string] `json:"filling_description"`
-	MainLock              Nullable[string] `json:"main_lock"`
-	AdditionalLock        Nullable[string] `json:"additional_lock"`
-	InsulationDescription Nullable[string] `json:"insulation_description"`
-	Hinges                Nullable[string] `json:"hinges"`
+	StrengthClass         Nullable[string] `json:"strength_class" swaggertype:"string"`
+	SoundInsulation       Nullable[string] `json:"sound_insulation" swaggertype:"string"`
+	MetalThickness        Nullable[string] `json:"metal_thickness" swaggertype:"string"`
+	BoxThickness          Nullable[string] `json:"box_thickness" swaggertype:"string"`
+	LeafThickness         Nullable[string] `json:"leaf_thickness" swaggertype:"string"`
+	LeafDescription       Nullable[string] `json:"leaf_description" swaggertype:"string"`
+	FillingDescription    Nullable[string] `json:"filling_description" swaggertype:"string"`
+	MainLock              Nullable[string] `json:"main_lock" swaggertype:"string"`
+	AdditionalLock        Nullable[string] `json:"additional_lock" swaggertype:"string"`
+	InsulationDescription Nullable[string] `json:"insulation_description" swaggertype:"string"`
+	Hinges                Nullable[string] `json:"hinges" swaggertype:"string"`
 }
 
 // Patch структура для InteriorDoor
 type InteriorDoorPatch struct {
 	ProductBasePatch
 	DoorBasePatch
-	OpeningSystem Nullable[string] `json:"opening_system"`
-	LeafCoating   Nullable[string] `json:"leaf_coating"`
-	Handle        Nullable[string] `json:"handle"`
+	OpeningSystem Nullable[string] `json:"opening_system" swaggertype:"string"`
+	LeafCoating   Nullable[string] `json:"leaf_coating" swaggertype:"string"`
+	Handle        Nullable[string] `json:"handle" swaggertype:"string"`
 }
 
 func (d *DoorBasePatch) Validate() error {

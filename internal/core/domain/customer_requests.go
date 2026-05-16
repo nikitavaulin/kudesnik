@@ -63,9 +63,9 @@ type CustomerRequestForList struct {
 }
 
 type CustomerRequestPatch struct {
-	DesiredDate  Nullable[time.Time] `json:"desired_date"`
-	DesiredTime  Nullable[time.Time] `json:"desired_time"`
-	ExtraComment Nullable[string]    `json:"extra_comment"`
+	DesiredDate  Nullable[time.Time] `json:"desired_date" swaggertype:"string" swagger:"format:date-time"`
+	DesiredTime  Nullable[time.Time] `json:"desired_time" swaggertype:"string" swagger:"format:date-time"`
+	ExtraComment Nullable[string]    `json:"extra_comment" swaggertype:"string"`
 }
 
 func NewCustomerRequest(

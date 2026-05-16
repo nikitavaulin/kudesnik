@@ -11,8 +11,20 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
-type GetProductsResponseDTO []ProductDTOResponse
-
+// GetProducts godoc
+// @Summary Получить список товаров
+// @Description Получить список товаров, есть фильтры
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param category query string false "код категории товар (windows, entrance-doors, interior-doors, balconies, others)"
+// @Param limit query int false "лимит возвращаемых категорий"
+// @Param offset query int false "смещение возвращаемых категорий"
+// @Param order query string false "сортировка по возрастанию или убыванию (asc, desc)"
+// @Success 200 {array} domain.ProductBaseDetailed "Список товаров"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products [get]
 func (h *ProductsHTTPHandler) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

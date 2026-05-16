@@ -12,10 +12,25 @@ import (
 )
 
 type UploadProductImageResponseDTO struct {
-	ImageURL     string `json:"image_url"`
-	ThumbnailURL string `json:"thumbnail_url"`
+	ImageURL     string `json:"image_url" example:"uploads/products/1778765484773106300_90c1e8db-4a4a-44c3-961a-6ad2c4b043f6.jpg"`
+	ThumbnailURL string `json:"thumbnail_url" example:"uploads/products/1778765484773106300_90c1e8db-4a4a-44c3-961a-6ad2c4b043f6.jpg"`
 }
 
+// UploadProductImage godoc
+// @Summary Загрузить фото товара
+// @Description Загрузить фото товара по ID
+// @Security BearerAuth
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param id path string true "ID товара" Format(uuid)
+// @Success 201 {object} UploadProductImageResponseDTO "UploadProductImage тело ответа"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/image/{id} [post]
 func (h *ProductsHTTPHandler) UploadProductImage(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -64,5 +79,5 @@ func (h *ProductsHTTPHandler) UploadProductImage(rw http.ResponseWriter, r *http
 		ThumbnailURL: uploadResult.ThumbnailURL,
 	}
 
-	responseHandler.JSONResponse(responseDTO, http.StatusOK)
+	responseHandler.JSONResponse(responseDTO, http.StatusCreated)
 }

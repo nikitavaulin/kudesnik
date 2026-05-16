@@ -16,7 +16,7 @@ func (s *AdminService) LoginAdmin(ctx context.Context, email string, password st
 	}
 
 	if !tools_passwordhasher.VerifyPassword(password, admin.PasswordHash) {
-		return "", fmt.Errorf("incorrect password: %w", core_errors.ErrInvalidArgument)
+		return "", fmt.Errorf("incorrect password: %w", core_errors.ErrUnauthorized)
 	}
 
 	token, err := s.jwtProvider.GenerateToken(tools_jwt.NewClaims(admin))

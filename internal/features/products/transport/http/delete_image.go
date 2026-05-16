@@ -9,6 +9,20 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
+// DeleteProductImage godoc
+// @Summary Удалить фото товара
+// @Description Удалить фото товара по ID товара.
+// @Security BearerAuth
+// @Tags products
+// @Produce json
+// @Param id path string true "ID товара для удаления фото" Format(uuid)
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/image/{id} [delete]
 func (h *ProductsHTTPHandler) DeleteProductImage(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

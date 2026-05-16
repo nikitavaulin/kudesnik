@@ -65,5 +65,16 @@ kudesnik-deploy:
 kudesnik-undeploy:
 	@docker compose down kudesnik
 
+swagger-gen:
+	@docker compose run --rm swagger \
+		init \
+		-g cmd/kudesnik/main.go \
+		-o docs \
+		--parseInternal \
+		--parseDependency
+
+
 ps:
 	@docker compose ps
+
+

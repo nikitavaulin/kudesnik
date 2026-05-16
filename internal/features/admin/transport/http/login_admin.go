@@ -17,6 +17,18 @@ type LoginAdminResponseDTO struct {
 	Token string `json:"token"`
 }
 
+// LoginAdmin godoc
+// @Summary Атворизоваться как админ
+// @Description Войти в аккаунт админа в системе
+// @Tags admins
+// @Accept json
+// @Produce json
+// @Param request body LoginAdminRequestDTO true "LoginAdmin тело запроса"
+// @Success 200 {object} LoginAdminResponseDTO "успешно созданный токен авторизации"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /admins/auth [post]
 func (h *AdminTrasnsportHTTPHandler) LoginAdmin(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

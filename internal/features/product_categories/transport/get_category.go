@@ -10,6 +10,17 @@ import (
 
 type GetProductCategoryResponse ProductCategoryDTOResponse
 
+// GetProductCategory godoc
+// @Summary Получить категорию товаров
+// @Description Получить категорию товаров по коду
+// @Tags product-categories
+// @Produce json
+// @Param category_code path string true "Код получаемой категории"
+// @Success 200 {object} GetProductCategoryResponse "полученная категория"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /product-categories/{category_code} [get]
 func (h *ProductCategoryHTTPHandler) GetProductCategory(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

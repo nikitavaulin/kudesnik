@@ -11,11 +11,28 @@ import (
 )
 
 type AdminPatchRequestDTO struct {
-	Email     core_http_types.Nullable[string]      `json:"email"`
-	FullName  core_http_types.Nullable[string]      `json:"full_name"`
-	AdminType core_http_types.Nullable[domain.Role] `json:"admin_type"`
+	Email     core_http_types.Nullable[string]      `json:"email" swaggertype:"string"`
+	FullName  core_http_types.Nullable[string]      `json:"full_name" swaggertype:"string"`
+	AdminType core_http_types.Nullable[domain.Role] `json:"admin_type" swaggertype:"string"`
 }
 
+// PatchAdmin godoc
+// @Summary Изменить админа
+// @Description Изменить почту, имя, тип админа в системе
+// @Security BearerAuth
+// @Tags admins
+// @Accept json
+// @Produce json
+// @Param id path string true "ID обновляемого админа" Format(uuid)
+// @Param request body AdminPatchRequestDTO true "PatchAdmin тело запроса"
+// @Success 201 {object} AdminsRepsonseDTO "успешно измененный админ"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /admins/{id} [patch]
 func (h *AdminTrasnsportHTTPHandler) PatchAdmin(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

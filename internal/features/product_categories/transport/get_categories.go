@@ -10,6 +10,17 @@ import (
 
 type GetCategoriesResponse []ProductCategoryDTOResponse
 
+// GetCategories godoc
+// @Summary Получить список категорий
+// @Description Получить список категорий, есть пагинация.
+// @Tags product-categories
+// @Produce json
+// @Param limit query int false "лимит возвращаемых категорий"
+// @Param offset query int false "смещение возвращаемых категорий"
+// @Success 200 {object} GetCategoriesResponse "полученные категории"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /product-categories [get]
 func (h *ProductCategoryHTTPHandler) GetCategories(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
