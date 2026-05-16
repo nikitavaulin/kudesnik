@@ -25,7 +25,10 @@ func NewHTTPReponseHandler(log *core_logger.Logger, rw http.ResponseWriter) *HTT
 
 func (h *HTTPResponseHandler) JSONResponse(responseBody any, statusCode int) {
 	h.rw.WriteHeader(statusCode)
-	if err := json.NewEncoder(h.rw).Encode(responseBody); err != nil {
+	encoder := json.NewEncoder(h.rw)
+	encoder.SetIndent("", "  ")
+	encoder.SetEscapeHTML(false)
+	if err := encoder.Encode(responseBody); err != nil {
 		h.log.Error("failed to write HTTP response", zap.Error(err))
 	}
 }
@@ -79,9 +82,9 @@ func (h *HTTPResponseHandler) PanicResponse(p any, msg string) {
 func (h *HTTPResponseHandler) errorResponse(statusCode int, err error, msg string) {
 	h.log.Error(msg, zap.Error(err))
 
-	response := map[string]string{
-		"message": msg,
-		"error":   err.Error(),
+	response := ErrorResponse{
+		Message: msg,
+		Error:   err.Error(),
 	}
 
 	h.JSONResponse(response, statusCode)

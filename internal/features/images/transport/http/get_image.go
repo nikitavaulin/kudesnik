@@ -14,6 +14,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetImage godoc
+// @Summary      Получить изображение
+// @Description  Возвращает изображение по указанному пути. Поддерживает serve content.
+// @Tags         images
+// @Param        path   path      string  true  "Путь к изображению"  Format(path)
+// @Header       200    {string}  Content-Type  "MIME тип изображения (image/jpeg, image/png)"
+// @Header       200    {string}  Content-Length  "Размер изображения в байтах"
+// @Success      200    {file}    binary  "Изображение успешно получено"
+// @Failure      400    {object}  core_http_response.ErrorResponse "Неверный путь к изображению"
+// @Failure      404    {object}  core_http_response.ErrorResponse  "Изображение не найдено"
+// @Failure      500    {object}  core_http_response.ErrorResponse  "Внутренняя ошибка сервера"
+// @Router       /static/{path} [get]
 func (h *ImagesTransportHTTPHandler) GetImage(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

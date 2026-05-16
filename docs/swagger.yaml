@@ -1,0 +1,1495 @@
+basePath: /api/v1
+definitions:
+  github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequest:
+    properties:
+      created_at:
+        type: string
+      customer_phone_number:
+        type: string
+      desired_date:
+        type: string
+      desired_time:
+        type: string
+      extra_comment:
+        type: string
+      handled_at:
+        type: string
+      handler_admin_id:
+        type: string
+      id:
+        type: string
+      product_id:
+        type: string
+      status:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestStatus'
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestDetailed:
+    properties:
+      chosen_product:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBaseDetailed'
+      created_at:
+        type: string
+      customer_fullname:
+        type: string
+      customer_phone_number:
+        type: string
+      desired_date:
+        type: string
+      desired_time:
+        type: string
+      extra_comment:
+        type: string
+      handled_at:
+        type: string
+      handler_admin_id:
+        type: string
+      id:
+        type: string
+      product_id:
+        type: string
+      status:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestStatus'
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestForList:
+    properties:
+      created_at:
+        type: string
+      customer_fullname:
+        type: string
+      customer_phone_number:
+        type: string
+      desired_date:
+        type: string
+      desired_time:
+        type: string
+      handled_at:
+        type: string
+      handler_admin_id:
+        type: string
+      handler_admin_name:
+        type: string
+      id:
+        type: string
+      status:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestStatus'
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestPatch:
+    properties:
+      desired_date:
+        type: string
+      desired_time:
+        type: string
+      extra_comment:
+        type: string
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestStatus:
+    enum:
+    - new
+    - in_progress
+    - completed
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - NewRequestStatus
+    - InProgressRequestStatus
+    - CompletedRequestStatus
+    - CancelledRequestStatus
+  github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBase:
+    properties:
+      category_code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      is_visible:
+        type: boolean
+      price:
+        type: number
+      producer_id:
+        type: string
+      product_name:
+        type: string
+      thumbnail_url:
+        type: string
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBaseDetailed:
+    properties:
+      category_code:
+        type: string
+      category_name:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      installation_price:
+        type: number
+      is_visible:
+        type: boolean
+      price:
+        type: number
+      producer_company_name:
+        type: string
+      producer_id:
+        type: string
+      product_name:
+        type: string
+      thumbnail_url:
+        type: string
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBasePatch:
+    properties:
+      category_code:
+        type: string
+      description:
+        type: string
+      image_url:
+        type: string
+      is_visible:
+        type: boolean
+      price:
+        type: number
+      producer_id:
+        type: string
+      product_name:
+        type: string
+      thumbnail_url:
+        type: string
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.ProductDetailed:
+    properties:
+      details:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductDetails'
+      product: {}
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.ProductDetails:
+    properties:
+      category_name:
+        type: string
+      installation_price:
+        type: number
+      producer_company_name:
+        type: string
+    type: object
+  github_com_nikitavaulin_kudesnik_internal_core_domain.Role:
+    enum:
+    - superadmin
+    - manager
+    - dismissed
+    type: string
+    x-enum-varnames:
+    - AdminRole
+    - ManagerRole
+    - DismissedAdminRole
+  github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  internal_features_admin_transport_http.AdminPatchRequestDTO:
+    properties:
+      admin_type:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+    type: object
+  internal_features_admin_transport_http.AdminResponseDTO:
+    properties:
+      admin_type:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.Role'
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+    type: object
+  internal_features_admin_transport_http.CreateAdminRequestDTO:
+    properties:
+      admin_type:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.Role'
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+    type: object
+  internal_features_admin_transport_http.LoginAdminRequestDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  internal_features_admin_transport_http.LoginAdminResponseDTO:
+    properties:
+      token:
+        type: string
+    type: object
+  internal_features_admin_transport_http.UpdateAdminTypeRequestDTO:
+    properties:
+      admin_type:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.Role'
+    type: object
+  internal_features_customer_requests_transport_http.CustomerRequestIDResponseDTO:
+    properties:
+      customer_request_id:
+        type: string
+    type: object
+  internal_features_customer_requests_transport_http.UpdateReqStatusDTO:
+    properties:
+      status:
+        $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestStatus'
+    type: object
+  internal_features_product_categories_transport.GetProductCategoryResponse:
+    properties:
+      category_code:
+        type: string
+      category_name:
+        type: string
+      installation_price:
+        type: number
+    type: object
+  internal_features_product_categories_transport.PatchProductCategoryRequest:
+    properties:
+      category_name:
+        type: string
+      installation_price:
+        type: number
+    type: object
+  internal_features_product_categories_transport.PatchProductCategoryResponse:
+    properties:
+      category_code:
+        type: string
+      category_name:
+        type: string
+      installation_price:
+        type: number
+    type: object
+  internal_features_product_categories_transport.ProductCategoryDTOResponse:
+    properties:
+      category_code:
+        type: string
+      category_name:
+        type: string
+      installation_price:
+        type: number
+    type: object
+  internal_features_products_transport_http.CreateProductResponse:
+    properties:
+      category_code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      price:
+        type: number
+      producer_id:
+        type: string
+      product_name:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_features_products_transport_http.ProductIdDTORequest:
+    properties:
+      product_id:
+        type: string
+    required:
+    - product_id
+    type: object
+  internal_features_products_transport_http.UpdateProductVisabilityRequestDTO:
+    properties:
+      is_visible:
+        type: boolean
+    type: object
+  internal_features_products_transport_http.UpdateProductsVisabilityRequestDTO:
+    properties:
+      is_visible:
+        type: boolean
+      productsIDs:
+        items:
+          $ref: '#/definitions/internal_features_products_transport_http.ProductIdDTORequest'
+        type: array
+    type: object
+  internal_features_products_transport_http.UploadProductImageResponseDTO:
+    properties:
+      image_url:
+        example: uploads/products/1778765484773106300_90c1e8db-4a4a-44c3-961a-6ad2c4b043f6.jpg
+        type: string
+      thumbnail_url:
+        example: uploads/products/1778765484773106300_90c1e8db-4a4a-44c3-961a-6ad2c4b043f6.jpg
+        type: string
+    type: object
+host: 127.0.0.1:5050
+info:
+  contact: {}
+  description: Kudesnik. Windows & Doors | REST-API scheme
+  title: Kudesnik API
+  version: "1.0"
+paths:
+  /admins:
+    get:
+      description: Получить список админов. Доступен фильтр по типу админа (superadmin
+        или manager)
+      parameters:
+      - description: тип получаемого админа (superadmin или manager)
+        in: query
+        name: admin_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученный список админов
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/internal_features_admin_transport_http.AdminResponseDTO'
+              type: array
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список админов
+      tags:
+      - admins
+    post:
+      consumes:
+      - application/json
+      description: Создать нового админа в системе
+      parameters:
+      - description: CreateAdmin тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_admin_transport_http.CreateAdminRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: успешно созданный админ
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_admin_transport_http.AdminResponseDTO'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать админа
+      tags:
+      - admins
+  /admins/{id}:
+    get:
+      description: Получить админа по ID
+      parameters:
+      - description: ID получаемого админа
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученный admin
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_admin_transport_http.AdminResponseDTO'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить админа
+      tags:
+      - admins
+    patch:
+      consumes:
+      - application/json
+      description: Изменить почту, имя, тип админа в системе
+      parameters:
+      - description: ID обновляемого админа
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: PatchAdmin тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_admin_transport_http.AdminPatchRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: успешно измененный админ
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_admin_transport_http.AdminResponseDTO'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить админа
+      tags:
+      - admins
+  /admins/auth:
+    post:
+      consumes:
+      - application/json
+      description: Войти в аккаунт админа в системе
+      parameters:
+      - description: LoginAdmin тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_admin_transport_http.LoginAdminRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успешно созданный токен авторизации
+          schema:
+            $ref: '#/definitions/internal_features_admin_transport_http.LoginAdminResponseDTO'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Атворизоваться как админ
+      tags:
+      - admins
+  /admins/profile:
+    get:
+      description: Получить админа по ID из jwt после авторизации
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученный admin
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_admin_transport_http.AdminResponseDTO'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить админа
+      tags:
+      - admins
+  /admins/role/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Изменить тип админа в системе, может только superadmin
+      parameters:
+      - description: ID обновляемого админа
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: PatchAdmin тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_admin_transport_http.UpdateAdminTypeRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить роль админа
+      tags:
+      - admins
+  /product-categories:
+    get:
+      description: Получить список категорий, есть пагинация.
+      parameters:
+      - description: лимит возвращаемых категорий
+        in: query
+        name: limit
+        type: integer
+      - description: смещение возвращаемых категорий
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученные категории
+          schema:
+            items:
+              $ref: '#/definitions/internal_features_product_categories_transport.ProductCategoryDTOResponse'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Получить список категорий
+      tags:
+      - product-categories
+  /product-categories/{category_code}:
+    get:
+      description: Получить категорию товаров по коду
+      parameters:
+      - description: Код получаемой категории
+        in: path
+        name: category_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученная категория
+          schema:
+            $ref: '#/definitions/internal_features_product_categories_transport.GetProductCategoryResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Получить категорию товаров
+      tags:
+      - product-categories
+    patch:
+      consumes:
+      - application/json
+      description: Изменить категорию товаров (название и цену установки) в системе
+      parameters:
+      - description: код обновляемой категории (windows, entrance-doors, interior-doors,
+          balconies, others)
+        in: path
+        name: category_code
+        required: true
+        type: string
+      - description: PatchProductCategory тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_product_categories_transport.PatchProductCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: обновленная категория
+          schema:
+            $ref: '#/definitions/internal_features_product_categories_transport.PatchProductCategoryResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить категорию
+      tags:
+      - product-categories
+  /products:
+    delete:
+      description: Удалить несколько товаров по списку их ID.
+      parameters:
+      - description: DeleteProducts тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/internal_features_products_transport_http.ProductIdDTORequest'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить товары
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Получить список товаров, есть фильтры
+      parameters:
+      - description: код категории товар (windows, entrance-doors, interior-doors,
+          balconies, others)
+        in: query
+        name: category
+        type: string
+      - description: лимит возвращаемых категорий
+        in: query
+        name: limit
+        type: integer
+      - description: смещение возвращаемых категорий
+        in: query
+        name: offset
+        type: integer
+      - description: сортировка по возрастанию или убыванию (asc, desc)
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список товаров
+          schema:
+            items:
+              $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBaseDetailed'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Получить список товаров
+      tags:
+      - products
+  /products/{category_code}:
+    post:
+      consumes:
+      - application/json
+      description: Создать товар (требуется указать конкретную категорию)
+      parameters:
+      - description: код категории товар которой создается (windows, entrance-doors,
+          interior-doors, balconies, others)
+        in: path
+        name: category_code
+        required: true
+        type: string
+      - description: CreateProduct тело запроса, если category_code=others
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBase'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Созданный товар
+          schema:
+            $ref: '#/definitions/internal_features_products_transport_http.CreateProductResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать товар
+      tags:
+      - products
+  /products/{category_code}/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Получить товар (требуется указать конкретную категорию)
+      parameters:
+      - description: ID товара
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: код категории товар которой создается (windows, entrance-doors,
+          interior-doors, balconies, others)
+        in: path
+        name: category_code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Созданный товар
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductDetailed'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Получить товар
+      tags:
+      - products
+    patch:
+      consumes:
+      - application/json
+      description: Обновить товар (требуется указать конкретную категорию)
+      parameters:
+      - description: ID товара
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: код категории товар которой создается (windows, entrance-doors,
+          interior-doors, balconies, others)
+        in: path
+        name: category_code
+        required: true
+        type: string
+      - description: PatchProduct тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBasePatch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обновленный товар
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.ProductBase'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Обновить товар
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: Удалить товар по ID.
+      parameters:
+      - description: ID товара
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить товар
+      tags:
+      - products
+  /products/image/{id}:
+    delete:
+      description: Удалить фото товара по ID товара.
+      parameters:
+      - description: ID товара для удаления фото
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить фото товара
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Загрузить фото товара по ID
+      parameters:
+      - description: ID товара
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: UploadProductImage тело ответа
+          schema:
+            $ref: '#/definitions/internal_features_products_transport_http.UploadProductImageResponseDTO'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Загрузить фото товара
+      tags:
+      - products
+  /products/visibility:
+    patch:
+      consumes:
+      - application/json
+      description: Изменить видимость списка товаров по списку их ID
+      parameters:
+      - description: UpdateProductsVisability тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_products_transport_http.UpdateProductsVisabilityRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить видимость списка товаров
+      tags:
+      - products
+  /products/visibility/p/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Изменить видимость товара
+      parameters:
+      - description: ID обновляемой заявки
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateProductVisability тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_products_transport_http.UpdateProductVisabilityRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить видимость товара
+      tags:
+      - products
+  /requests:
+    get:
+      description: Получить список заявок, есть фильтры.
+      parameters:
+      - description: фильтр по ID админа, обрабатывающего заявку
+        format: uuid
+        in: query
+        name: admin
+        type: string
+      - description: фильтр по статусу заявок
+        in: query
+        name: status
+        type: string
+      - description: фильтр по номеру клиента в формате 79998887766
+        in: query
+        name: customer
+        type: string
+      - description: лимит возвращаемых заявок
+        in: query
+        name: limit
+        type: integer
+      - description: смещение возвращаемых заявок
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученные заявки
+          schema:
+            items:
+              $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestForList'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список заявок
+      tags:
+      - customer-requests
+    post:
+      consumes:
+      - application/json
+      description: Создать заявку клиента (не требует авторизации)
+      parameters:
+      - description: CreateCustomerRequest тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ID созданной заявки
+          schema:
+            $ref: '#/definitions/internal_features_customer_requests_transport_http.CustomerRequestIDResponseDTO'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Создать заявку клиента
+      tags:
+      - customer-requests
+  /requests/{id}:
+    delete:
+      description: Удалить заявку по ID. Может только superadmin
+      parameters:
+      - description: ID удаляемой заявки
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Удалить заявку
+      tags:
+      - customer-requests
+    get:
+      description: Получить заявку по ID
+      parameters:
+      - description: ID получаемой заявки
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: полученная заявка
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestDetailed'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить заявку
+      tags:
+      - customer-requests
+    patch:
+      consumes:
+      - application/json
+      description: Изменить заявку (желаемые дату и время, доп. комментарий) в системе
+      parameters:
+      - description: ID обновляемой заявки
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: PatchCustomerRequest тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_domain.CustomerRequestPatch'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить заявку
+      tags:
+      - customer-requests
+  /requests/status/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Изменить статус заявки (new, in_progress, completed, cancelled)
+        в системе
+      parameters:
+      - description: ID обновляемой заявки
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateCustomerRequestStatus тело запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_customer_requests_transport_http.UpdateReqStatusDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Изменить статус заявки
+      tags:
+      - customer-requests
+  /static/{path}:
+    get:
+      description: Возвращает изображение по указанному пути. Поддерживает serve content.
+      parameters:
+      - description: Путь к изображению
+        format: path
+        in: path
+        name: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Изображение успешно получено
+          schema:
+            type: file
+        "400":
+          description: Неверный путь к изображению
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Изображение не найдено
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/github_com_nikitavaulin_kudesnik_internal_core_transport_http_response.ErrorResponse'
+      summary: Получить изображение
+      tags:
+      - images
+securityDefinitions:
+  BearerAuth:
+    description: 'Some queries require authorization: "Bearer <jwt_token>"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

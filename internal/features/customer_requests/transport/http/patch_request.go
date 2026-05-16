@@ -11,6 +11,23 @@ import (
 	"go.uber.org/zap"
 )
 
+// PatchCustomerRequest godoc
+// @Summary Изменить заявку
+// @Description Изменить заявку (желаемые дату и время, доп. комментарий) в системе
+// @Security BearerAuth
+// @Tags customer-requests
+// @Accept json
+// @Produce json
+// @Param id path string true "ID обновляемой заявки" Format(uuid)
+// @Param request body domain.CustomerRequestPatch true "PatchCustomerRequest тело запроса"
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /requests/{id} [patch]
 func (h *CustomerRequestsTransportHTTP) PatchCustomerRequest(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

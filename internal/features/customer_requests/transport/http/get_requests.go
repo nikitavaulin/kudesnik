@@ -12,6 +12,23 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
+// GetCustomerRequests godoc
+// @Summary Получить список заявок
+// @Description Получить список заявок, есть фильтры.
+// @Security BearerAuth
+// @Tags customer-requests
+// @Produce json
+// @Param admin query string false "фильтр по ID админа, обрабатывающего заявку" Format(uuid)
+// @Param status query string false "фильтр по статусу заявок"
+// @Param customer query string false "фильтр по номеру клиента в формате 79998887766"
+// @Param limit query int false "лимит возвращаемых заявок"
+// @Param offset query int false "смещение возвращаемых заявок"
+// @Success 200 {array} domain.CustomerRequestForList "полученные заявки"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /requests [get]
 func (h *CustomerRequestsTransportHTTP) GetCustomerRequests(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

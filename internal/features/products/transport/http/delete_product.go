@@ -8,6 +8,20 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
+// DeleteProduct godoc
+// @Summary Удалить товар
+// @Description Удалить товар по ID.
+// @Security BearerAuth
+// @Tags products
+// @Produce json
+// @Param id path string true "ID товара" Format(uuid)
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/{id} [delete]
 func (h *ProductsHTTPHandler) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -29,6 +43,19 @@ func (h *ProductsHTTPHandler) DeleteProduct(rw http.ResponseWriter, r *http.Requ
 	responseHandler.NoContentResponse()
 }
 
+// DeleteProducts godoc
+// @Summary Удалить товары
+// @Description Удалить несколько товаров по списку их ID.
+// @Security BearerAuth
+// @Tags products
+// @Produce json
+// @Param request body []ProductIdDTORequest true "DeleteProducts тело запроса"
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products [delete]
 func (h *ProductsHTTPHandler) DeleteProducts(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -12,6 +12,22 @@ type UpdateProductVisabilityRequestDTO struct {
 	IsVisible bool `json:"is_visible"`
 }
 
+// UpdateProductVisability godoc
+// @Summary Изменить видимость товара
+// @Description Изменить видимость товара
+// @Security BearerAuth
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param id path string true "ID обновляемой заявки" Format(uuid)
+// @Param request body UpdateProductVisabilityRequestDTO true "UpdateProductVisability тело запроса"
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/visibility/p/{id} [patch]
 func (h *ProductsHTTPHandler) UpdateProductVisability(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -45,6 +61,21 @@ type UpdateProductsVisabilityRequestDTO struct {
 	ProductsIDs []ProductIdDTORequest
 }
 
+// UpdateProductsVisability godoc
+// @Summary Изменить видимость списка товаров
+// @Description Изменить видимость списка товаров по списку их ID
+// @Security BearerAuth
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param request body UpdateProductsVisabilityRequestDTO true "UpdateProductsVisability тело запроса"
+// @Success 204
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/visibility [patch]
 func (h *ProductsHTTPHandler) UpdateProductsVisability(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

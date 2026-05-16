@@ -22,6 +22,23 @@ type PatchProductRequestDTO struct {
 
 type PatchProductResponseDTO ProductDTOResponse
 
+// PatchProduct godoc
+// @Summary Обновить товар
+// @Description Обновить товар (требуется указать конкретную категорию)
+// @Security BearerAuth
+// @Tags products
+// @Accept json
+// @Produce json
+// @Param id path string true "ID товара" Format(uuid)
+// @Param category_code path string true "код категории товар которой создается (windows, entrance-doors, interior-doors, balconies, others)"
+// @Param request body domain.ProductBasePatch true "PatchProduct тело запроса"
+// @Success 200 {object} domain.ProductBase "Обновленный товар"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 409 {object} core_http_response.ErrorResponse "Conflict"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /products/{category_code}/{id} [patch]
 func (h *ProductsHTTPHandler) PatchProduct(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

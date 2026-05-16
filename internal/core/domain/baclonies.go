@@ -58,8 +58,8 @@ func (b *Balcony) GetCategoryName() ProductCategoryCode {
 
 type BalconyPatch struct {
 	ProductBasePatch
-	Purpose  Nullable[string] `json:"purpose"`
-	Material Nullable[string] `json:"material"`
+	Purpose  Nullable[string] `json:"purpose" swaggertype:"string"`
+	Material Nullable[string] `json:"material" swaggertype:"string"`
 }
 
 // Validate проверяет корректность патча

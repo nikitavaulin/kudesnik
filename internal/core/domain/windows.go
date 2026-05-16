@@ -54,10 +54,10 @@ func (w *Window) GetCategoryName() ProductCategoryCode { return WindowsCategory 
 
 type WindowPatch struct {
 	ProductBasePatch
-	Purpose  Nullable[string] `json:"purpose"`
-	Width    Nullable[int]    `json:"width"`
-	Height   Nullable[int]    `json:"height"`
-	Material Nullable[string] `json:"material"`
+	Purpose  Nullable[string] `json:"purpose" swaggertype:"string"`
+	Width    Nullable[int]    `json:"width" swaggertype:"integer"`
+	Height   Nullable[int]    `json:"height" swaggertype:"integer"`
+	Material Nullable[string] `json:"material" swaggertype:"string"`
 }
 
 func (w *WindowPatch) Validate() error {

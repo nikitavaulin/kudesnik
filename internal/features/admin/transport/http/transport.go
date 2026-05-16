@@ -47,6 +47,13 @@ func (h *AdminTrasnsportHTTPHandler) Routes() []core_http_server.Route {
 			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
 		},
 		{
+			Method:       http.MethodGet,
+			Path:         "/admins/profile",
+			Handler:      h.GetAdminAfterAuth,
+			RequiresAuth: true,
+			AllowedRoles: []domain.Role{domain.AdminRole, domain.ManagerRole},
+		},
+		{
 			Method:  http.MethodPost,
 			Path:    "/admins/auth",
 			Handler: h.LoginAdmin,

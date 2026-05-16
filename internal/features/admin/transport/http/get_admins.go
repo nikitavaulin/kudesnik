@@ -11,6 +11,19 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
+// GetAdmins godoc
+// @Summary Получить список админов
+// @Description Получить список админов. Доступен фильтр по типу админа (superadmin или manager)
+// @Security BearerAuth
+// @Tags admins
+// @Produce json
+// @Param admin_type query string false "тип получаемого админа (superadmin или manager)"
+// @Success 200 {array} AdminsRepsonseDTO "полученный список админов"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /admins [get]
 func (h *AdminTrasnsportHTTPHandler) GetAdmins(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

@@ -29,8 +29,19 @@ import (
 	products_service "github.com/nikitavaulin/kudesnik/internal/features/products/service"
 	products_transport_http "github.com/nikitavaulin/kudesnik/internal/features/products/transport/http"
 	"go.uber.org/zap"
+
+	_ "github.com/swaggo/swag"
 )
 
+// @title Kudesnik API
+// @version 1.0
+// @description Kudesnik. Windows & Doors | REST-API scheme
+// @host 127.0.0.1:5050
+// @BasePath /api/v1
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Some queries require authorization: "Bearer <jwt_token>"
 func main() {
 	fmt.Println("Hello, kudesnik app!")
 
@@ -102,6 +113,7 @@ func main() {
 		core_http_server.NewHTTPServerConfigMust(),
 		logger,
 		jwtProvider,
+		core_http_middleware.CORS(),
 		core_http_middleware.RequestID(),
 		core_http_middleware.Logger(logger),
 		core_http_middleware.Trace(),
@@ -109,6 +121,7 @@ func main() {
 	)
 	httpServer.RegisterAPIRouters(apiVersionRouter)
 	httpServer.RegisterRoutes(imageTransport.Routes()...)
+	httpServer.RegisterSwagger()
 
 	if err := httpServer.Run(ctx); err != nil {
 		logger.Error("HTTP server run error", zap.Error(err))

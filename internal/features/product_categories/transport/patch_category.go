@@ -14,8 +14,8 @@ import (
 )
 
 type PatchProductCategoryRequest struct {
-	CategoryName      core_http_types.Nullable[string]  `json:"category_name"`
-	InstallationPrice core_http_types.Nullable[float64] `json:"installation_price"`
+	CategoryName      core_http_types.Nullable[string]  `json:"category_name" swaggertype:"string"`
+	InstallationPrice core_http_types.Nullable[float64] `json:"installation_price" swaggertype:"number"`
 }
 
 func (r *PatchProductCategoryRequest) Validate() error {
@@ -39,6 +39,22 @@ func (r *PatchProductCategoryRequest) Validate() error {
 
 type PatchProductCategoryResponse ProductCategoryDTOResponse
 
+// PatchProductCategory godoc
+// @Summary Изменить категорию
+// @Description Изменить категорию товаров (название и цену установки) в системе
+// @Security BearerAuth
+// @Tags product-categories
+// @Accept json
+// @Produce json
+// @Param category_code path string true "код обновляемой категории (windows, entrance-doors, interior-doors, balconies, others)"
+// @Param request body PatchProductCategoryRequest true "PatchProductCategory тело запроса"
+// @Success 200 {object} PatchProductCategoryResponse "обновленная категория"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} core_http_response.ErrorResponse "Not found"
+// @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
+// @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /product-categories/{category_code} [patch]
 func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

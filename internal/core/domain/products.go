@@ -97,14 +97,14 @@ func (p *ProductBase) Validate() error {
 }
 
 type ProductBasePatch struct {
-	ProductName  Nullable[string]    `json:"product_name"`
-	Price        Nullable[float64]   `json:"price"`
-	Description  Nullable[string]    `json:"description"`
-	IsVisible    Nullable[bool]      `json:"is_visible"`
-	CategoryCode Nullable[string]    `json:"category_code"`
-	ProducerID   Nullable[uuid.UUID] `json:"producer_id"`
-	ImageURL     Nullable[string]    `json:"image_url"`
-	ThumbnailURL Nullable[string]    `json:"thumbnail_url"`
+	ProductName  Nullable[string]    `json:"product_name" swaggertype:"string"`
+	Price        Nullable[float64]   `json:"price" swaggertype:"number"`
+	Description  Nullable[string]    `json:"description" swaggertype:"string"`
+	IsVisible    Nullable[bool]      `json:"is_visible" swaggertype:"boolean"`
+	CategoryCode Nullable[string]    `json:"category_code" swaggertype:"string"`
+	ProducerID   Nullable[uuid.UUID] `json:"producer_id"  swaggertype:"string"`
+	ImageURL     Nullable[string]    `json:"image_url"  swaggertype:"string"`
+	ThumbnailURL Nullable[string]    `json:"thumbnail_url"  swaggertype:"string"`
 }
 
 func NewProductPatch(

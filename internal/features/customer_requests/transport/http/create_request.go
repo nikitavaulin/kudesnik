@@ -9,6 +9,17 @@ import (
 	core_http_response "github.com/nikitavaulin/kudesnik/internal/core/transport/http/response"
 )
 
+// CreateCustomerRequest godoc
+// @Summary Создать заявку клиента
+// @Description Создать заявку клиента (не требует авторизации)
+// @Tags customer-requests
+// @Accept json
+// @Produce json
+// @Param request body domain.CustomerRequest true "CreateCustomerRequest тело запроса"
+// @Success 201 {object} CustomerRequestIDResponseDTO "ID созданной заявки"
+// @Failure 400 {object} core_http_response.ErrorResponse "Bad request"
+// @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
+// @Router /requests [post]
 func (h *CustomerRequestsTransportHTTP) CreateCustomerRequest(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
