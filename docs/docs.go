@@ -572,9 +572,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/product-categories/{id}": {
+            },
             "patch": {
                 "security": [
                     {

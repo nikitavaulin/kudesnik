@@ -704,7 +704,6 @@ paths:
       summary: Получить категорию товаров
       tags:
       - product-categories
-  /product-categories/{id}:
     patch:
       consumes:
       - application/json

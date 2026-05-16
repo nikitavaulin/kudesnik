@@ -54,7 +54,7 @@ type PatchProductCategoryResponse ProductCategoryDTOResponse
 // @Failure 401 {object} core_http_response.ErrorResponse "Unauthorized"
 // @Failure 403 {object} core_http_response.ErrorResponse "Forbidden"
 // @Failure 500 {object} core_http_response.ErrorResponse "Internal server error"
-// @Router /product-categories/{id} [patch]
+// @Router /product-categories/{category_code} [patch]
 func (h *ProductCategoryHTTPHandler) PatchProductCategory(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
